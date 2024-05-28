@@ -1,0 +1,17 @@
+{
+    "name": "timot/php-mvc-framework",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Murunya Saina",
+            "email": "154616059+longhauler99@users.noreply.github.com"
+        }
+    ],
+  "require": {
+    "ext-pdo": "*"
+  }
+}
