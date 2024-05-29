@@ -131,7 +131,8 @@
                 if(returnData.success)
                 {
                     // window.location.href = returnData.redirect;
-                    alert(returnData.success);
+                    // alert(returnData.success);
+                    document.getElementById('post-form').reset();
                     fetchPosts(apiUrl2);
                 }
                 else if(returnData.errors) // Handle multiple errors

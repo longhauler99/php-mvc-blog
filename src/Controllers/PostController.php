@@ -63,7 +63,7 @@ class PostController extends Controller
 
     public function fetchPosts(): void
     {
-        $stmt = $this->db->prepare("SELECT * FROM posts");
+        $stmt = $this->db->prepare("SELECT * FROM posts ORDER BY id DESC");
         $stmt->execute();
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
