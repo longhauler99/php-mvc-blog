@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP-MVC-APPLICATION</title>
+    <title>BlogDaily</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -77,10 +77,10 @@
                         <?php if (!empty($users)) {
                             foreach ($users as $user): ?>
                                 <tr>
-                                    <td><?= $user->UserID ?></td>
-                                    <td><?= $user->UserName ?></td>
-                                    <td><?= $user->Email ?></td>
-                                    <td><?= $user->Password ?></td>
+                                    <td><?= $user->id ?></td>
+                                    <td><?= $user->username ?></td>
+                                    <td><?= $user->email ?></td>
+                                    <td><?= $user->password ?></td>
                                 </tr>
                             <?php endforeach;
                         } ?>

@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
     <meta charset="UTF-8">
-    <title>PHP-MVC-FRAMEWORK</title>
+    <title>BlogDaily</title>
     <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -32,20 +32,17 @@
     </div>
 
     <div class="login">
-        <form id="login-form" class="form" action="/login" method="POST">
+        <form id="login-form">
             <label for="chk" aria-hidden="true">Login</label>
-            <input type="text" name="username" placeholder="User Name" required="">
+            <input type="email" name="email" placeholder="Email Address" required="">
             <input type="password" name="password" placeholder="Password" required="">
-            <button class="login-btn" type="submit" name="login-button">Login</button>
+            <button class="login-btn" type="button">Login</button>
         </form>
     </div>
 </div>
 
 <script>
     document.addEventListener('click', ClickHandler);
-
-    let loginForm = document.getElementById('login-form');
-
 
     // window["entryForm"] = new EntryFormTemplate(signupForm, loginForm);
 
@@ -57,6 +54,13 @@
         {
             const apiUrl = '/register';
             let queryCue = new FormData(document.getElementById('signup-form'));
+            Save1Record(apiUrl, queryCue);
+
+        }
+        else if(eln.matches('.login-btn'))
+        {
+            const apiUrl = '/login';
+            let queryCue = new FormData(document.getElementById('login-form'));
             Save1Record(apiUrl, queryCue);
 
         }
@@ -79,9 +83,14 @@
             .then(returnData => {
                 if(returnData.success)
                 {
-                    alert(returnData.success);
+                    window.location.href = returnData.redirect;
+                    // alert(returnData.success);
                 }
-                else if(returnData.error)
+                else if(returnData.errors) // Handle multiple errors
+                {
+                    alert(returnData.errors.join("\n"));
+                }
+                else if(returnData.error) // Handle a single error
                 {
                     alert(returnData.error);
                 }
