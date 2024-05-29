@@ -7,8 +7,8 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+<div class="mb-5">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="/home">BlogDaily</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,33 +59,35 @@
 </div>
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col">
-            <div class="alert alert-light mt-2">
-                <div class="text-center">
-                    <h1 class="h1">Simple PHP MVC Starter!</h1>
+        <div class="col col-8">
+            <div class="mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>New Post</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="post-form">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control post-title" name="title" id="title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="desc" class="form-label">Description</label>
+                                <textarea class="form-control post-description" name="description" id="desc" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="me-1">
+                            <button type="button" class="new-post btn btn-success btn-sm">Submit Post</button>
+                        </div>
+                    </div>
                 </div>
-                <table class="table table-responsive-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>User Name</th>
-                            <th>Email Address</th>
-                            <th>Password</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($users)) {
-                            foreach ($users as $user): ?>
-                                <tr>
-                                    <td><?= $user->id ?></td>
-                                    <td><?= $user->username ?></td>
-                                    <td><?= $user->email ?></td>
-                                    <td><?= $user->password ?></td>
-                                </tr>
-                            <?php endforeach;
-                        } ?>
-                    </tbody>
-                </table>
+            </div>
+            <div class="mt-2">
+                <div class="alert alert-light" id="posts-container">
+<!--                    Posts-->
+                </div>
             </div>
         </div>
     </div>
@@ -93,6 +95,112 @@
 <!-- Your content here -->
 
 <script src="js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('click', ClickHandler)
+
+    function ClickHandler(event)
+    {
+        const eln = event.target;
+
+        if(eln.matches('.new-post'))
+        {
+            const apiUrl = '/newpost';
+            const apiUrl2 = '/fetchPosts';
+            let queryCue = new FormData(document.getElementById('post-form'));
+            Save1Record(apiUrl, queryCue, apiUrl2);
+        }
+    }
+
+    fetchPosts('/fetchPosts');
+
+    function Save1Record(apiUrl, queryCue, apiUrl2)
+    {
+        fetch(apiUrl, {
+            method: 'POST',
+            body: queryCue,
+        })
+            .then(response => {
+                if(!response.ok)
+                {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+                //
+                return response.json();
+            })
+            .then(returnData => {
+                if(returnData.success)
+                {
+                    // window.location.href = returnData.redirect;
+                    alert(returnData.success);
+                    fetchPosts(apiUrl2);
+                }
+                else if(returnData.errors) // Handle multiple errors
+                {
+                    alert(returnData.errors.join("\n"));
+                }
+                else if(returnData.error) // Handle a single error
+                {
+                    alert(returnData.error);
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    }
+
+    function fetchPosts(apiUrl2) {
+        fetch(apiUrl2)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.posts && data.posts.length > 0) {
+                    const postsContainer = document.getElementById('posts-container');
+                    postsContainer.innerHTML = ''; // Clear any existing content
+
+                    data.posts.forEach(post => {
+                        const postElement = createPostElement(post);
+                        postsContainer.appendChild(postElement);
+                    });
+                } else {
+                    console.log('No posts found');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function createPostElement(post) {
+        // Create a div with class 'alert alert-light post-content'
+        const postDiv = document.createElement('div');
+        postDiv.classList.add('alert', 'alert-light', 'post-content');
+
+        // Create the first title and description
+        const title1 = document.createElement('h4');
+        title1.classList.add('post-title');
+        title1.textContent = post.title; // Assuming 'title' is a field in your post data
+
+        const description1 = document.createElement('p');
+        description1.classList.add('post-description');
+        description1.textContent = post.content; // Assuming 'description' is a field in your post data
+
+        // Create the horizontal rule
+        // const hr = document.createElement('hr');
+
+        // Append the elements to the post div
+        postDiv.appendChild(title1);
+        postDiv.appendChild(description1);
+        // postDiv.appendChild(hr);
+
+        return postDiv;
+    }
+
+
+</script>
 </body>
 </html>
 

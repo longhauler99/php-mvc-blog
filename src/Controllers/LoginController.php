@@ -83,6 +83,9 @@ class LoginController extends Controller
                     {
                         session_start();
                         $_SESSION['acc_login'] = password_hash($password, PASSWORD_BCRYPT);
+//                        $_SESSION['user_id'] = $this->getUserInfo($email)['id'];
+                        $_SESSION['username'] = $this->getUserInfo($email)['username'];
+                        $_SESSION['email'] = $this->getUserInfo($email)['email'];
 
                         echo json_encode(['success' => 'You have logged in successfully', 'redirect' => '/home']);
                     }
@@ -154,6 +157,16 @@ class LoginController extends Controller
         $count = $stmt->fetchColumn();
 
         return $count > 0;
+    }
+
+    private function getUserInfo($email)
+    {
+        $stmt = $this->db->prepare("SELECT id, username, email FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?? null;
     }
 
     public function EscalateErrors($errors): void // Error propagation
