@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Core\Connection;
+use PDOException;
 
 class LoginController extends Controller
 {
@@ -19,52 +20,50 @@ class LoginController extends Controller
 
     public function register(): void
     {
-        if($_SERVER['REQUEST_METHOD'] === 'POST')
+        if($_SERVER['REQUEST_METHOD'] === 'POST') // Get the form data
         {
-//            var_dump($_POST);
             $username = $_POST['username'] ?? null;
             $email = $_POST['email'] ?? null;
-            $password = md5($_POST['password'] ?? null);
-            $password2 = md5($_POST['password2'] ?? null);
+            $password = $_POST['password'] ?? null;
 
-            if(empty($username)
-                || empty($email)
-                || empty($password)
-                || empty($password2))
+            if (empty($username) || empty($email) || empty($password)) // Validate the input data
             {
-                http_response_code(400);
-                echo json_encode(['error', 'Invalid input data']);
-                return;
+//                http_response_code(230); // Bad Request
+                echo json_encode(['error' => 'All fields must be filled']);
             }
-
-
-            if($password == $password2)
+            elseif($this->userExists($username)) // Check if user already exists
             {
-                $stmt = $this->db->prepare("INSERT INTO users (username, email, password, password2) VALUES (:username, :email, :password, :password2)");
-
-                $stmt->bindParam(':username', $username);
-                $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':password', $password);
-                $stmt->bindParam(':password2', $password2);
-
-                if ($stmt->execute())
-                {
-                    http_response_code(201);
-                    echo json_encode(['success' => 'User registered successfully']);
-                }
-                else
-                {
-                    http_response_code(202);
-                    echo json_encode(['error' => 'Something went wrong']);
-                }
+//                http_response_code(409); // Conflict
+                echo json_encode(['error' => 'Username already exists']);
             }
             else
             {
-                http_response_code(203);
-                echo json_encode(['error' => 'Passwords do not match']);
+                // Hash the password
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+                // Insert the new user into the database
+                try {
+                    $stmt = $this->db->prepare("INSERT INTO users (UserName, Email, Password) VALUES (?, ?, ?)");
+                    $stmt->execute([$username, $email, $hashedPassword]);
+
+                    // Send a success response
+//                    http_response_code(201); // Created
+                    echo json_encode(['success' => 'User registered successfully']);
+                } catch (PDOException $e) {
+                    // Send an error response if the insert fails
+//                    http_response_code(500); // Internal Server Error
+                    echo json_encode(['error' => 'Failed to register user: ' . $e->getMessage()]);
+                }
             }
         }
+        else
+        {
+            http_response_code(405); // Method Not Allowed
+            echo json_encode(['error' => 'Method Not Allowed']);
+        }
     }
+
+
 
     public function login(): void
     {
@@ -107,8 +106,21 @@ class LoginController extends Controller
 
     private function authenticateUser($username, $password): bool
     {
-        $stmt = $this->db->query("SELECT UserName, Password FROM `users` WHERE UserName = '$username' AND Password = '$password'");
+        $stmt = $this->db->query("SELECT username, Password FROM `users` WHERE username = '$username' AND Password = '$password'");
 
         return $stmt->rowCount() == 1;
+    }
+
+    private function userExists($username): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM `users` WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        $count = $stmt->fetchColumn();
+
+        return $count > 0;
+    }
+
+    public function Escalate($msgCode, $msgText)
+    {
     }
 }

@@ -55,47 +55,40 @@
 
         if(eln.matches('.signup-btn'))
         {
-            event.preventDefault();
-            let queryCue = new FormData(document.getElementById('signup-form'));
-            // console.log(jsonForm(queryCue));
-// return;
             const apiUrl = '/register';
+            let queryCue = new FormData(document.getElementById('signup-form'));
+            Save1Record(apiUrl, queryCue);
 
-            fetch(apiUrl, {
-                method: 'POST',
-                // headers: {
-                //     'Content-Type': 'application/json',
-                // },
-                body: queryCue,
-            })
-                .then(response => {
-                    if(!response.ok)
-                    {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(returnData => {
-                    if(returnData.success)
-                    {
-                        alert(returnData.success);
-                    }
-                    else if(returnData.error)
-                    {
-                        alert(returnData.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
-            // Save1Record('/register', entryForm.signupFormData);
-            // console.log(entryForm.signupFormData);
         }
     }
 
-    function Save1Record(apiUrl, saveData)
+    function Save1Record(apiUrl, queryCue)
     {
+        fetch(apiUrl, {
+            method: 'POST',
+            body: queryCue,
+        })
+            .then(response => {
+                if(!response.ok)
+                {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+                //
+                return response.json();
+            })
+            .then(returnData => {
+                if(returnData.success)
+                {
+                    alert(returnData.success);
+                }
+                else if(returnData.error)
+                {
+                    alert(returnData.error);
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+            });
     }
 
 /*
