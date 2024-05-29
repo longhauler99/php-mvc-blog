@@ -83,7 +83,7 @@ class LoginController extends Controller
                     {
                         session_start();
                         $_SESSION['acc_login'] = password_hash($password, PASSWORD_BCRYPT);
-//                        $_SESSION['user_id'] = $this->getUserInfo($email)['id'];
+                        $_SESSION['user_id'] = $this->getUserInfo($email)['id'];
                         $_SESSION['username'] = $this->getUserInfo($email)['username'];
                         $_SESSION['email'] = $this->getUserInfo($email)['email'];
 

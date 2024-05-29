@@ -91,6 +91,20 @@
             </div>
         </div>
     </div>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer">
+        <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <img src="..." class="rounded me-2" alt="...">
+                <strong class="me-auto">BlogDaily</strong>
+                <small class="text-muted">just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Your content here -->
 
@@ -133,6 +147,7 @@
                     // window.location.href = returnData.redirect;
                     // alert(returnData.success);
                     document.getElementById('post-form').reset();
+                    showToast(returnData.success);
                     fetchPosts(apiUrl2);
                 }
                 else if(returnData.errors) // Handle multiple errors
@@ -198,6 +213,20 @@
         // postDiv.appendChild(hr);
 
         return postDiv;
+    }
+
+    // Function to show toast
+    function showToast(message) {
+        const toastContainer = document.getElementById('toastContainer');
+        const toastElement = document.getElementById('liveToast');
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+
+        // Initialize the toast
+        const toast = new bootstrap.Toast(toastElement);
+
+        // Show the toast
+        toast.show();
     }
 
 

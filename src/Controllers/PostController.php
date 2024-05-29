@@ -63,14 +63,24 @@ class PostController extends Controller
 
     public function fetchPosts(): void
     {
-        $stmt = $this->db->prepare("SELECT * FROM posts ORDER BY id DESC");
-        $stmt->execute();
-        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        session_start();
 
-        if ($posts) {
-            echo json_encode(['posts' => $posts]);
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
+
+            $stmt = $this->db->prepare("SELECT * FROM posts WHERE user_id = :user_id ORDER BY id DESC");
+            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if ($posts) {
+                echo json_encode(['posts' => $posts]);
+            } else {
+                echo json_encode(['posts' => []]);
+            }
         } else {
-            echo json_encode(['posts' => []]);
+            http_response_code(401); // Unauthorized
+            echo json_encode(['error' => 'User not authenticated']);
         }
     }
 
