@@ -19,35 +19,49 @@ class LoginController extends Controller
 
     public function register(): void
     {
-
-        if(isset($_POST['signup-button']))
+        if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
-            $username = $_POST['username'];
-            $email = $_POST['email'];
-            $password = md5($_POST['pwd']);
-            $password2 = md5($_POST['pwd2']);
+//            var_dump($_POST);
+            $username = $_POST['username'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $password = md5($_POST['password'] ?? null);
+            $password2 = md5($_POST['password2'] ?? null);
+
+            if(empty($username)
+                || empty($email)
+                || empty($password)
+                || empty($password2))
+            {
+                http_response_code(400);
+                echo json_encode(['error', 'Invalid input data']);
+                return;
+            }
+
 
             if($password == $password2)
             {
-                $stmt = $this->db->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+                $stmt = $this->db->prepare("INSERT INTO users (username, email, password, password2) VALUES (:username, :email, :password, :password2)");
 
                 $stmt->bindParam(':username', $username);
                 $stmt->bindParam(':email', $email);
                 $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':password2', $password2);
 
                 if ($stmt->execute())
                 {
-                    header("Location: /");
-                    exit;
+                    http_response_code(201);
+                    echo json_encode(['success' => 'User registered successfully']);
                 }
                 else
                 {
-                    echo "Error: " . $stmt->errorInfo()[2];
+                    http_response_code(202);
+                    echo json_encode(['error' => 'Something went wrong']);
                 }
             }
             else
             {
-                $this->render('login', ['error' => 'Passwords do not match']);
+                http_response_code(203);
+                echo json_encode(['error' => 'Passwords do not match']);
             }
         }
     }
