@@ -34,7 +34,7 @@ class PostController extends Controller
 
         if ($action == 'add')
         {
-            $data['modal_title'] = 'Create Post';
+            $data['modal_title'] = 'New Post';
             $columns = $this->getTableColumns();
 
             foreach ($columns as $column) {
@@ -56,7 +56,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <textarea class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="3"></textarea>
+                        <textarea class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="5"></textarea>
                     </div>
                 ';
                 }

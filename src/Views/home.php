@@ -74,8 +74,7 @@
     <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer">
         <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <img src="..." class="rounded me-2 bi bi-square-fill" alt="...">
-                <strong class="me-auto bi bi-square-fill">BlogDaily</strong>
+                <strong class="me-auto bi">BlogDaily</strong>
                 <small class="text-muted">just now</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -88,7 +87,7 @@
 
     <!-- Add Modal -->
     <div class="modal fade" id="formTemplate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="formTemplateLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="formTemplateLabel">Add Employee</h5>
@@ -130,10 +129,6 @@
         {
             const apiUrl = '/fetchModal';
             fetchModal(apiUrl, 'add');
-            // const apiUrl = '/newpost';
-            // const apiUrl2 = '/fetchPosts';
-            // let queryCue = new FormData(document.getElementById('post-form'));
-            // Save1Record(apiUrl, queryCue, apiUrl2);
         }
         else if(eln.matches('#saveBtn'))
         {
@@ -141,6 +136,10 @@
             const apiUrl2 = '/fetchPosts';
             let queryCue = new FormData(liveForm.form);
             Save1Record(apiUrl, queryCue, apiUrl2);
+        }
+        else if(eln.matches('.closeBtn'))
+        {
+            liveForm.close();
         }
     }
 
@@ -165,18 +164,20 @@
                 {
                     // window.location.href = returnData.redirect;
                     // alert(returnData.success);
+                    showToast(returnData.success, 'bg-success');
                     liveForm.form.reset();
-                    showToast(returnData.success);
-                    fetchPosts(apiUrl2);
                     liveForm.close();
+                    fetchPosts(apiUrl2);
                 }
                 else if(returnData.errors) // Handle multiple errors
                 {
-                    alert(returnData.errors.join("\n"));
+                    showToast(returnData.errors.join("\n"), 'bg-warning');
+                    // alert(returnData.errors.join("\n"));
                 }
                 else if(returnData.error) // Handle a single error
                 {
-                    alert(returnData.error);
+                    showToast(returnData.error, 'bg-warning');
+                    // alert(returnData.error);
                 }
             })
             .catch(error => {
@@ -264,9 +265,10 @@
     }
 
     // Function to show toast
-    function showToast(message) {
+    function showToast(message, msg_color) {
         const toastContainer = document.getElementById('toastContainer');
         const toastElement = document.getElementById('liveToast');
+        toastElement.querySelector('.toast-header').classList.add(msg_color);
         const toastBody = toastElement.querySelector('.toast-body');
         toastBody.textContent = message;
 
