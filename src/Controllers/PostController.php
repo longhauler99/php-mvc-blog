@@ -89,6 +89,43 @@ class PostController extends Controller
         }
     }
 
+    public function editPost(): void
+    {
+        session_start();
+
+        $errors = [];
+
+        if(!isset($_SESSION['user_id']))
+        {
+            $errors[] = 'Unauthorized';
+            $this->EscalateErrors($errors);
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST')
+        {
+            if (empty($_POST)) // Validate the input data
+            {
+                echo json_encode(['error' => 'All fields must be filled']);
+            }
+            else
+            {
+                try // Insert the new post into the database
+                {
+                    $stmt = $this->db->prepare("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)");
+                    $stmt->execute([$user_id, $title, $content]);
+
+                    echo json_encode(['success' => 'Post created successfully']); // Send a success response
+                }
+                catch (PDOException $e)
+                {
+
+                    http_response_code(500); // Send an error response if the insert fails
+                    echo json_encode(['error' => 'Failed to create post: ' . $e->getMessage()]);
+                }
+            }
+        }
+    }
+
     public function EscalateErrors($errors): void // Error propagation
     {
         if (!empty($errors))

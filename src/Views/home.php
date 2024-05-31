@@ -52,6 +52,7 @@
                     </li>
 -->                </ul>
                 <form name="logout-form" action="/logout" method="POST">
+                    <button class="btn btn-sm btn-success text-light new-post">New Post</button>
                     <button class="btn btn-sm btn-danger text-light" type="submit" name="logout-btn">Logout</button>
                 </form>
             </div>
@@ -95,7 +96,7 @@
         <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
                 <img src="..." class="rounded me-2 bi bi-square-fill" alt="...">
-                <strong class="me-auto">BlogDaily</strong>
+                <strong class="me-auto bi bi-square-fill">BlogDaily</strong>
                 <small class="text-muted">just now</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -104,11 +105,42 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="formTemplate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="formTemplateLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formTemplateLabel">Add Employee</h5>
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col">
+                                <form id="genericForm">
+                                    <div class="alert border shadow inputWrapper">
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary closeBtn">Close</button>
+                    <button id="saveBtn" type="button" class="btn btn-sm btn-primary">save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Your content here -->
 
 <script src="js/bootstrap.bundle.min.js"></script>
 <script>
+    window['liveForm'] = new FormTemplate(document.querySelector('#formTemplate'));
     document.addEventListener('click', ClickHandler)
 
     function ClickHandler(event)
@@ -201,12 +233,27 @@
                       <div class="container-fluid">
                         <div class="row">
                           <div class="col">
-                            <h4 class="post-title">${post.title}</h4>
-                            <p class="post-description">${post.content}</p>
+                            <div class="row justify-content-between">
+                                <div class="col">
+                                    <h4 class="post-title">${post.title}</h4>
+                                </div>
+                                <div class="col text-end">
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-id="${post.id}"><a class="dropdown-item">Edit</a></li>
+                                            <li data-id="${post.id}"><a class="dropdown-item">Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                                <p class="post-description">${post.content}</p>
                           </div>
                         </div>
                         <div class="row mt-2">
-                          <div class="col-md-3 text-start">
+                          <div class="col-md-2 text-start">
                             <span class="badge bg-primary"><i class="bi bi-chat"></i> 15 Comments</span>
                           </div>
                           <div class="col-md-2 text-start">
@@ -215,7 +262,7 @@
                           <div class="col-md-2 text-start">
                             <span class="badge bg-info"><i class="bi bi-share"></i> 100 Shares</span>
                           </div>
-                          <div class="col-md-5 text-end">
+                          <div class="col-md-6 text-end">
                             <small class="text-muted">${post.username} . <i class="bi bi-clock"></i> ${new Date(post.created_at).toLocaleString()}</small>
                           </div>
                         </div>
@@ -241,6 +288,73 @@
         toast.show();
     }
 
+    async function fetchModal(url)
+    {
+        const response = await fetch(url);
+        const data = await response.json();
+        // console.log(data);return;
+        liveForm.open();
+        liveForm.title.innerText = data[0].modal_title;
+        liveForm.form.querySelector('.inputWrapper').innerHTML = data[0].form_template;
+    }
+
+
+    function FormTemplate(xModal)
+    {
+        this.mWindow = new bootstrap.Modal(xModal, {
+            backdrop: 'static',
+            keyboard: false,
+            draggable: true
+        });
+
+        this.open = function() {
+            this.mWindow.show();
+        }
+
+        this.close = function() {
+            this.mWindow.hide();
+        }
+
+        this.dialog = xModal.querySelector('.modal-dialog');
+        this.header = xModal.querySelector('.modal-header');
+        this.title = xModal.querySelector('.modal-title');
+        this.xButton = xModal.querySelector('.btn-close');
+
+        this.body = xModal.querySelector('.modal-body');
+        this.form = xModal.querySelector('form');
+
+        this.footer = xModal.querySelector('.modal-footer');
+        this.closeButton = xModal.querySelector('.closeBtn');
+        this.saveButton = xModal.querySelector('#saveBtn');
+        this.savRecord = ''; // Snap initial record before changes
+        this.recKey = ''; // Request data key
+
+        this.SetDataAction = function(dAction = "") // Set or Reset data-action property
+        {
+            this.dataAction = dAction; // Set or Reset
+
+            this.saveButton.classList.remove("saveBtn", "chgBtn", "delBtn");
+
+            if(this.dataAction === "add") {
+                this.saveButton.hidden=false;
+                this.saveButton.classList.add("saveBtn");
+                this.saveButton.innerText = "Save";
+            }
+            else if(this.dataAction === "chg") {
+                this.saveButton.hidden=false;
+                this.saveButton.classList.add("chgBtn");
+                this.saveButton.innerText = "Update";
+            }
+            else if(this.dataAction === "viu") {
+                this.saveButton.hidden=true;
+            }
+            else if(this.dataAction === "del") {
+                this.saveButton.hidden=false;
+                this.saveButton.classList.add("delBtn");
+                this.saveButton.innerText = "Delete";
+            }
+        }
+    }
 
 </script>
 </body>
