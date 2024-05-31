@@ -15,6 +15,19 @@ class PostController extends Controller
         $this->db = Connection::connect($config);
     }
 
+    public function fetchModal($action): void
+    {
+        session_start();
+
+        $errors = [];
+
+        if(!isset($_SESSION['user_id']))
+        {
+            $errors[] = 'Unauthorized';
+            $this->EscalateErrors($errors);
+        }
+        echo json_encode(['success' => 'Request sent successfully', "action" => $action]);
+    }
     public function createPost(): void
     {
         session_start();

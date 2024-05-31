@@ -51,8 +51,8 @@
                         </ul>
                     </li>
 -->                </ul>
+                <button class="btn btn-sm btn-success text-light me-2 new-post">New Post</button>
                 <form name="logout-form" action="/logout" method="POST">
-                    <button class="btn btn-sm btn-success text-light new-post">New Post</button>
                     <button class="btn btn-sm btn-danger text-light" type="submit" name="logout-btn">Logout</button>
                 </form>
             </div>
@@ -81,7 +81,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="me-1">
-                            <button type="button" class="new-post btn btn-success btn-sm">Submit Post</button>
+                            <button type="button" class="xnew-post btn btn-success btn-sm">Submit Post</button>
                         </div>
                     </div>
                 </div>
@@ -149,10 +149,12 @@
 
         if(eln.matches('.new-post'))
         {
-            const apiUrl = '/newpost';
-            const apiUrl2 = '/fetchPosts';
-            let queryCue = new FormData(document.getElementById('post-form'));
-            Save1Record(apiUrl, queryCue, apiUrl2);
+            const apiUrl = '/fetchModal';
+            fetchModal(apiUrl, 'add');
+            // const apiUrl = '/newpost';
+            // const apiUrl2 = '/fetchPosts';
+            // let queryCue = new FormData(document.getElementById('post-form'));
+            // Save1Record(apiUrl, queryCue, apiUrl2);
         }
     }
 
@@ -288,14 +290,46 @@
         toast.show();
     }
 
-    async function fetchModal(url)
+    async function fetchModal(apiUrl, action)
     {
-        const response = await fetch(url);
-        const data = await response.json();
-        // console.log(data);return;
-        liveForm.open();
-        liveForm.title.innerText = data[0].modal_title;
-        liveForm.form.querySelector('.inputWrapper').innerHTML = data[0].form_template;
+        fetch(apiUrl, {
+            method: 'POST',
+            body: action
+        })
+            .then(response => {
+                if(!response.ok)
+                {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+                //
+                return response.json();
+            })
+            .then(returnData => {
+                if(returnData.success)
+                {
+                    // window.location.href = returnData.redirect;
+                    alert(returnData.success);
+                }
+                else if(returnData.errors) // Handle multiple errors
+                {
+                    alert(returnData.errors.join("\n"));
+                }
+                else if(returnData.error) // Handle a single error
+                {
+                    alert(returnData.error);
+                }
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+        //
+        //
+        //
+        // const response = await fetch(`${apiUrl}?${queryStr}`);
+        // const data = await response.json();
+        // liveForm.open();
+        // liveForm.title.innerText = data[0].modal_title;
+        // liveForm.form.querySelector('.inputWrapper').innerHTML = data[0].form_template;
     }
 
 
