@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlogDaily</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="font/bootstrap-icons.css">
+    <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
 <div class="mb-5">
@@ -85,10 +85,8 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-2">
-                <div class="alert alert-light" id="posts-container">
+            <div class="mt-2" id="posts-container">
 <!--                    Posts-->
-                </div>
             </div>
         </div>
     </div>
@@ -106,7 +104,6 @@
             </div>
         </div>
     </div>
-
 </div>
 <!-- Your content here -->
 
@@ -166,17 +163,21 @@
             });
     }
 
-    function fetchPosts(apiUrl2) {
+    function fetchPosts(apiUrl2)
+    {
         fetch(apiUrl2)
             .then(response => {
-                if (!response.ok) {
+                if (!response.ok)
+                {
                     throw new Error('Network response was not ok');
                 }
+
                 return response.json();
             })
             .then(data => {
                 if (data.posts && data.posts.length > 0)
                 {
+                    // console.log(data.posts);return;
                     document.querySelector("#posts-container").innerHTML = createPostElement(data);
                 }
                 else
@@ -189,16 +190,38 @@
             });
     }
 
-    function createPostElement(data) {
+    function createPostElement(data)
+    {
         let htmlContent = '';
+
         data.posts.forEach(post => {
             htmlContent +=
-                `
-                    <div class="post-section alert alert-light">
-                        <h4 class="post-title">${post.title}</h4>
-                        <p class="post-description">${post.content}</p>
+                `<div class="alert alert-light">
+                    <div class="post-section alert alert-light mb-4">
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col">
+                            <h4 class="post-title">${post.title}</h4>
+                            <p class="post-description">${post.content}</p>
+                          </div>
+                        </div>
+                        <div class="row mt-2">
+                          <div class="col-md-3 text-start">
+                            <span class="badge bg-primary"><i class="bi bi-chat"></i> 15 Comments</span>
+                          </div>
+                          <div class="col-md-2 text-start">
+                            <span class="badge bg-success"><i class="bi bi-heart"></i> 50 Likes</span>
+                          </div>
+                          <div class="col-md-2 text-start">
+                            <span class="badge bg-info"><i class="bi bi-share"></i> 100 Shares</span>
+                          </div>
+                          <div class="col-md-5 text-end">
+                            <small class="text-muted">${post.username} . <i class="bi bi-clock"></i> ${new Date(post.created_at).toLocaleString()}</small>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                `;
+                </div>`;
         });
         //
         return htmlContent;

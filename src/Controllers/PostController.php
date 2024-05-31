@@ -68,7 +68,12 @@ class PostController extends Controller
         if (isset($_SESSION['user_id'])) {
             $userId = $_SESSION['user_id'];
 
-            $stmt = $this->db->prepare("SELECT * FROM posts WHERE user_id = :user_id ORDER BY id DESC");
+            $stmt = $this->db->prepare(
+                "SELECT posts.*, users.username
+                        FROM posts
+                            INNER JOIN users ON posts.user_id = users.id
+                        WHERE user_id = :user_id
+                            ORDER BY id DESC");
             $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
             $stmt->execute();
             $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
