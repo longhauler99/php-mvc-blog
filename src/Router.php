@@ -10,7 +10,7 @@ class Router {
         $this->routes[$method][$route] = ['controller' => $controller, 'action' => $action];
     }
 
-    public function get($route, $controller, $action)
+    public function get($route, $controller, $action): void
     {
         $this->addRoute($route, $controller, $action, "GET");
     }
@@ -28,18 +28,22 @@ class Router {
         $uri = strtok($_SERVER['REQUEST_URI'], '?');
         $method = $_SERVER['REQUEST_METHOD'];
 
-        if(array_key_exists($uri, $this->routes[$method]))
-        {
-            $controller = $this->routes[$method][$uri]['controller'];
-            $action = $this->routes[$method][$uri]['action'];
+        foreach ($this->routes[$method] as $route => $data) {
+            $routePattern = preg_replace('/{[^}]+}/', '([^/]+)', $route);
+            $routePattern = str_replace('/', '\/', $routePattern);
 
-            $config = require __DIR__ . '/../config.php';
-            $controller = new $controller($config['db']);
-            $controller->$action();
+            if (preg_match('/^' . $routePattern . '$/', $uri, $matches)) {
+                array_shift($matches);
+                $controller = $data['controller'];
+                $action = $data['action'];
+
+                $config = require __DIR__ . '/../config.php';
+                $controller = new $controller($config['db']);
+                call_user_func_array([$controller, $action], $matches);
+                return;
+            }
         }
-        else
-        {
-            throw new \Exception("No route found for URI: $uri");
-        }
+
+        throw new \Exception("No route found for URI: $uri");
     }
 }

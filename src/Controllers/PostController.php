@@ -15,19 +15,60 @@ class PostController extends Controller
         $this->db = Connection::connect($config);
     }
 
-    public function fetchModal($action): void
+    public function fetchModal(): void
     {
         session_start();
 
+        $data = [];
         $errors = [];
 
-        if(!isset($_SESSION['user_id']))
+        if (!isset($_SESSION['user_id']))
         {
             $errors[] = 'Unauthorized';
             $this->EscalateErrors($errors);
         }
-        echo json_encode(['success' => 'Request sent successfully', "action" => $action]);
+
+        $action = $_POST["action"] ?? '';
+
+        $form_template = '';
+
+        if ($action == 'add')
+        {
+            $data['modal_title'] = 'Create Post';
+            $columns = $this->getTableColumns();
+
+            foreach ($columns as $column) {
+                $columnName = $column['COLUMN_NAME'];
+                $columnType = $column['DATA_TYPE'];
+
+                if (in_array($columnName, ["id", "created_at", "updated_at"])) {
+                    continue;
+                } elseif ($columnType === 'varchar' && $columnName === 'title') {
+                    $label = 'Title';
+                    $form_template .= '
+                    <div class="mb-3">
+                        <label for="' . $columnName . '" class="form-label">' . $label . '</label>
+                        <input type="text" class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '">
+                    </div>
+                ';
+                } elseif ($columnType === 'text' && $columnName === 'content') {
+                    $label = 'Description';
+                    $form_template .= '
+                    <div class="mb-3">
+                        <label for="' . $columnName . '" class="form-label">' . $label . '</label>
+                        <textarea class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="3"></textarea>
+                    </div>
+                ';
+                }
+            }
+
+
+            $data['form_template'] = $form_template;
+        }
+
+        echo json_encode(['success' => 'Request sent successfully', 'data' => $data]);
     }
+
     public function createPost(): void
     {
         session_start();
@@ -45,7 +86,7 @@ class PostController extends Controller
             $user_id = $_SESSION['user_id'];
 
             $title = $_POST['title'] ?? null;
-            $content = $_POST['description'] ?? null;
+            $content = $_POST['content'] ?? null;
 
             if (empty($title) || empty($content)) // Validate the input data
             {
@@ -139,6 +180,15 @@ class PostController extends Controller
         }
     }
 
+    private function getTableColumns(): false|array
+    {
+        $table_name = "posts";
+        $stmt = $this->db->prepare("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table");
+        $stmt->bindParam(':table', $table_name);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     public function EscalateErrors($errors): void // Error propagation
     {
         if (!empty($errors))

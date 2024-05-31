@@ -63,28 +63,7 @@
     <div class="row justify-content-center">
         <div class="col col-8">
             <div class="mt-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>New Post</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="post-form">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control post-title" name="title" id="title">
-                            </div>
-                            <div class="mb-3">
-                                <label for="desc" class="form-label">Description</label>
-                                <textarea class="form-control post-description" name="description" id="desc" rows="3"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <div class="me-1">
-                            <button type="button" class="xnew-post btn btn-success btn-sm">Submit Post</button>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <div class="mt-2" id="posts-container">
 <!--                    Posts-->
@@ -120,7 +99,7 @@
                         <div class="row justify-content-center">
                             <div class="col">
                                 <form id="genericForm">
-                                    <div class="alert border shadow inputWrapper">
+                                    <div class="inputWrapper">
 
                                     </div>
                                 </form>
@@ -156,6 +135,13 @@
             // let queryCue = new FormData(document.getElementById('post-form'));
             // Save1Record(apiUrl, queryCue, apiUrl2);
         }
+        else if(eln.matches('#saveBtn'))
+        {
+            const apiUrl = '/newpost';
+            const apiUrl2 = '/fetchPosts';
+            let queryCue = new FormData(liveForm.form);
+            Save1Record(apiUrl, queryCue, apiUrl2);
+        }
     }
 
     fetchPosts('/fetchPosts');
@@ -179,9 +165,10 @@
                 {
                     // window.location.href = returnData.redirect;
                     // alert(returnData.success);
-                    document.getElementById('post-form').reset();
+                    liveForm.form.reset();
                     showToast(returnData.success);
                     fetchPosts(apiUrl2);
+                    liveForm.close();
                 }
                 else if(returnData.errors) // Handle multiple errors
                 {
@@ -294,7 +281,9 @@
     {
         fetch(apiUrl, {
             method: 'POST',
-            body: action
+            body: new URLSearchParams({
+                action: action
+            })
         })
             .then(response => {
                 if(!response.ok)
@@ -307,8 +296,10 @@
             .then(returnData => {
                 if(returnData.success)
                 {
-                    // window.location.href = returnData.redirect;
-                    alert(returnData.success);
+                    liveForm.open();
+                    liveForm.title.innerText = returnData.data.modal_title;
+                    liveForm.form.querySelector('.inputWrapper').innerHTML = returnData.data.form_template;
+                    // alert(returnData.success);return;
                 }
                 else if(returnData.errors) // Handle multiple errors
                 {

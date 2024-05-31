@@ -13,7 +13,7 @@ $router->get('/home', HomeController::class, 'index');
 
 $router->post('/newpost', PostController::class, 'createPost');
 $router->get('/fetchPosts', PostController::class, 'fetchPosts');
-$router->post('/fetchModal/{action}', PostController::class, 'fetchModal');
+$router->post('/fetchModal', PostController::class, 'fetchModal');
 
 $router->post('/logout', LoginController::class, 'logout');
 
