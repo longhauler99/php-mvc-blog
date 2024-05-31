@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlogDaily</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="font/bootstrap-icons.css">
 </head>
 <body>
 <div class="mb-5">
@@ -95,7 +96,7 @@
     <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer">
         <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <img src="..." class="rounded me-2" alt="...">
+                <img src="..." class="rounded me-2 bi bi-square-fill" alt="...">
                 <strong class="me-auto">BlogDaily</strong>
                 <small class="text-muted">just now</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -105,6 +106,7 @@
             </div>
         </div>
     </div>
+
 </div>
 <!-- Your content here -->
 
@@ -173,15 +175,12 @@
                 return response.json();
             })
             .then(data => {
-                if (data.posts && data.posts.length > 0) {
-                    const postsContainer = document.getElementById('posts-container');
-                    postsContainer.innerHTML = ''; // Clear any existing content
-
-                    data.posts.forEach(post => {
-                        const postElement = createPostElement(post);
-                        postsContainer.appendChild(postElement);
-                    });
-                } else {
+                if (data.posts && data.posts.length > 0)
+                {
+                    document.querySelector("#posts-container").innerHTML = createPostElement(data);
+                }
+                else
+                {
                     console.log('No posts found');
                 }
             })
@@ -190,29 +189,19 @@
             });
     }
 
-    function createPostElement(post) {
-        // Create a div with class 'alert alert-light post-content'
-        const postDiv = document.createElement('div');
-        postDiv.classList.add('alert', 'alert-light', 'post-content');
-
-        // Create the first title and description
-        const title1 = document.createElement('h4');
-        title1.classList.add('post-title');
-        title1.textContent = post.title; // Assuming 'title' is a field in your post data
-
-        const description1 = document.createElement('p');
-        description1.classList.add('post-description');
-        description1.textContent = post.content; // Assuming 'description' is a field in your post data
-
-        // Create the horizontal rule
-        // const hr = document.createElement('hr');
-
-        // Append the elements to the post div
-        postDiv.appendChild(title1);
-        postDiv.appendChild(description1);
-        // postDiv.appendChild(hr);
-
-        return postDiv;
+    function createPostElement(data) {
+        let htmlContent = '';
+        data.posts.forEach(post => {
+            htmlContent +=
+                `
+                    <div class="post-section alert alert-light">
+                        <h4 class="post-title">${post.title}</h4>
+                        <p class="post-description">${post.content}</p>
+                    </div>
+                `;
+        });
+        //
+        return htmlContent;
     }
 
     // Function to show toast
