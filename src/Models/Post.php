@@ -22,6 +22,16 @@ class Post
         return $stmt->execute();
     }
 
+    public function updatePost($post_id, $title, $content): bool
+    {
+            $stmt = $this->db->prepare("UPDATE `posts` SET title = :title, content = :content WHERE id = :post_id");
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':content', $content);
+            $stmt->bindParam(':post_id', $post_id);
+
+            return $stmt->execute();
+    }
+
     public function getOnePost($id)
     {
         $stmt = $this->db->prepare("SELECT title, content FROM `posts` WHERE id = :id");

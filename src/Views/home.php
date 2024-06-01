@@ -108,7 +108,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary closeBtn">Close</button>
-                    <button id="saveBtn" type="button" class="btn btn-sm btn-primary">save</button>
+                    <button id="" type="button" class="btn btn-sm btn-primary save-btn">save</button>
                 </div>
             </div>
         </div>
@@ -130,13 +130,22 @@
             if(eln.matches('.new-post'))
             {
                 const apiUrl = '/fetchModal';
-                fetchModal(apiUrl, 'add');
+                liveForm.SetDataAction('add');
+                fetchModal(apiUrl, liveForm.dataAction);
             }
-            else if(eln.matches('#saveBtn'))
+            else if(eln.matches('.save-btn'))
             {
                 const apiUrl = '/newpost';
                 const apiUrl2 = '/fetchPosts';
                 let queryCue = new FormData(liveForm.form);
+                Save1Record(apiUrl, queryCue, apiUrl2);
+            }
+            else if(eln.matches('.chg-btn'))
+            {
+                const apiUrl = '/editpost';
+                const apiUrl2 = '/fetchPosts';
+                let queryCue = new FormData(liveForm.form);
+                queryCue.append('id', liveForm.recKey);
                 Save1Record(apiUrl, queryCue, apiUrl2);
             }
             else if(eln.matches('.closeBtn'))
@@ -150,7 +159,8 @@
             if(eln.matches(".edit-post"))
             {
                 const apiUrl = '/fetchModal';
-                fetchModal(apiUrl, "edit", eln.dataset.id);
+                liveForm.SetDataAction('edit');
+                fetchModal(apiUrl, liveForm.dataAction, eln.dataset.id);
                 // alert(eln.dataset.id);
             }
         }
@@ -313,8 +323,8 @@
                 if(returnData.success)
                 {
                     liveForm.open();
+                    liveForm.recKey = returnData.data.post_id;
                     liveForm.title.innerText = returnData.data.modal_title;
-                    liveForm.saveButton.innerText = returnData.data.modal_button;
                     liveForm.form.querySelector('.inputWrapper').innerHTML = returnData.data.form_template;
                     // alert(returnData.success);return;
                 }
@@ -367,7 +377,7 @@
 
         this.footer = xModal.querySelector('.modal-footer');
         this.closeButton = xModal.querySelector('.closeBtn');
-        this.saveButton = xModal.querySelector('#saveBtn');
+        this.saveButton = xModal.querySelector('.save-btn');
         this.savRecord = ''; // Snap initial record before changes
         this.recKey = ''; // Request data key
 
@@ -375,16 +385,16 @@
         {
             this.dataAction = dAction; // Set or Reset
 
-            this.saveButton.classList.remove("saveBtn", "chgBtn", "delBtn");
+            this.saveButton.classList.remove("save-btn", "chg-btn", "del-btn");
 
             if(this.dataAction === "add") {
                 this.saveButton.hidden=false;
-                this.saveButton.classList.add("saveBtn");
+                this.saveButton.classList.add("save-btn");
                 this.saveButton.innerText = "Save";
             }
-            else if(this.dataAction === "chg") {
+            else if(this.dataAction === "edit") {
                 this.saveButton.hidden=false;
-                this.saveButton.classList.add("chgBtn");
+                this.saveButton.classList.add("chg-btn");
                 this.saveButton.innerText = "Update";
             }
             else if(this.dataAction === "viu") {
@@ -392,7 +402,7 @@
             }
             else if(this.dataAction === "del") {
                 this.saveButton.hidden=false;
-                this.saveButton.classList.add("delBtn");
+                this.saveButton.classList.add("del-btn");
                 this.saveButton.innerText = "Delete";
             }
         }

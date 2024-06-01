@@ -12,6 +12,7 @@ $router->post('/login', LoginController::class, 'login');
 $router->get('/home', HomeController::class, 'index');
 
 $router->post('/newpost', PostController::class, 'createPost');
+$router->post('/editpost', PostController::class, 'updatePost');
 $router->get('/fetchPosts', PostController::class, 'fetchPosts');
 $router->post('/fetchModal', PostController::class, 'fetchModal');
 

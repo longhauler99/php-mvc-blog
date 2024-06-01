@@ -40,7 +40,6 @@ class PostController extends Controller
         if ($action == 'add')
         {
             $data['modal_title'] = 'New Post';
-            $data['modal_button'] = 'Save';
             $columns = $this->postModel->getTableColumns();
 
             foreach ($columns as $column)
@@ -79,7 +78,6 @@ class PostController extends Controller
         elseif ($action == 'edit')
         {
             $data['modal_title'] = 'Edit Post';
-            $data['modal_button'] = 'Update';
             $columns = $this->postModel->getTableColumns();
             $post = $this->postModel->getOnePost($id);
 
@@ -115,7 +113,7 @@ class PostController extends Controller
                     ';
                 }
             }
-
+            $data['post_id'] = $id;
             $data['form_template'] = $form_template;
         }
 
@@ -187,7 +185,7 @@ class PostController extends Controller
         }
     }
 
-    public function editPost(): void
+    public function updatePost(): void
     {
         session_start();
 
@@ -200,7 +198,11 @@ class PostController extends Controller
 
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
-            if (empty($_POST)) // Validate the input data
+            $post_id = Helper::sanitizeInput($_POST['id'] ?? null);
+            $title = Helper::sanitizeInput($_POST['title'] ?? null);
+            $content = Helper::sanitizeInput($_POST['content'] ?? null);
+
+            if (empty($post_id) || empty($title) || empty($content)) // Validate the input data
             {
                 echo json_encode(['error' => 'All fields must be filled']);
             }
@@ -208,18 +210,19 @@ class PostController extends Controller
             {
                 try // Insert the new post into the database
                 {
-                    $stmt = $this->db->prepare("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)");
-                    $stmt->execute([$user_id, $title, $content]);
+                    $this->postModel->updatePost($post_id, $title, $content);
 
-                    echo json_encode(['success' => 'Post created successfully']); // Send a success response
+                    echo json_encode(['success' => 'Post updated successfully']); // Send a success response
                 }
                 catch (PDOException $e)
                 {
-
-                    http_response_code(500); // Send an error response if the insert fails
-                    echo json_encode(['error' => 'Failed to create post: ' . $e->getMessage()]);
+                    echo json_encode(['error' => 'Failed to update post: ' . $e->getMessage()]);
                 }
             }
+        }
+        else
+        {
+            echo json_encode(['error' => 'Method Not Allowed']);
         }
     }
 }
