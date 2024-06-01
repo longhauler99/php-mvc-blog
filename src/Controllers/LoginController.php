@@ -107,14 +107,43 @@ class LoginController extends Controller
         }
     }
 
+    public function edit($userId): void
+    {
+        // Handle user edit logic here
+        $username = $_POST['username'] ?? null;
+        $email = $_POST['email'] ?? null;
+        $password = $_POST['password'] ?? null;
+
+        if ($username && $email) {
+            if ($this->userModel->updateUser($userId, $username, $email, $password)) {
+                echo json_encode(['success' => 'User updated successfully']);
+            } else {
+                echo json_encode(['error' => 'Failed to update user']);
+            }
+        } else {
+            echo json_encode(['error' => 'Username and email are required']);
+        }
+    }
+
+    public function delete($userId): void
+    {
+        // Handle user deletion logic here
+        if ($this->userModel->deleteUser($userId)) {
+            echo json_encode(['success' => 'User deleted successfully']);
+        } else {
+            echo json_encode(['error' => 'Failed to delete user']);
+        }
+    }
+
     public function logout(): void
     {
         session_start();
+
         if(isset($_POST['logout-btn']))
         {
             session_destroy(); // or unset($_SESSION['acc_login']);
 
-            header("Location: /");
+            Helper::redirect('/');
             exit;
         }
     }
