@@ -211,14 +211,9 @@ class PostController extends Controller
         {
             $user_id = $_SESSION['user_id'];
 
-            if ($this->postModel->getAllPosts($user_id))
-            {
-                echo json_encode(['posts' => $this->postModel->getAllPosts($user_id)]);
-            }
-            else
-            {
-                echo json_encode(['posts' => []]);
-            }
+            $this->postModel->getAllPosts($user_id);
+
+            echo json_encode(['success' => 'Post fetched successfully' ,'posts' => $this->postModel->getAllPosts($user_id)]);
         }
         else
         {

@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary closeBtn">Close</button>
+                    <button type="button" class="btn btn-sm btn-secondary close-btn">Close</button>
                     <button id="" type="button" class="btn btn-sm btn-primary save-btn">save</button>
                 </div>
             </div>
@@ -156,7 +156,7 @@
                 queryCue.append('id', liveForm.recKey);
                 Save1Record(apiUrl, queryCue, apiUrl2);
             }
-            else if(eln.matches('.closeBtn'))
+            else if(eln.matches('.close-btn'))
             {
                 liveForm.form.reset();
                 liveForm.close();
@@ -242,7 +242,8 @@
                 }
                 else
                 {
-                    console.log('No posts found');
+                    document.querySelector("#posts-container").innerHTML = '';
+                    // console.log('No posts found');
                 }
             })
             .catch(error => {
@@ -391,7 +392,7 @@
         this.form = xModal.querySelector('form');
 
         this.footer = xModal.querySelector('.modal-footer');
-        this.closeButton = xModal.querySelector('.closeBtn');
+        this.closeButton = xModal.querySelector('.close-btn');
         this.saveButton = xModal.querySelector('.save-btn');
         this.savRecord = ''; // Snap initial record before changes
         this.recKey = ''; // Request data key
