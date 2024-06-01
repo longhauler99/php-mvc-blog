@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Core\Connection;
+use App\Models\Post;
 use App\Utils\Helper;
 use PDO;
 use PDOException;
@@ -10,10 +11,13 @@ use PDOException;
 class PostController extends Controller
 {
     protected $db;
-    public function __construct($config)
+
+    protected Post $postModel;
+
+    public function __construct($db)
     {
         parent::__construct();
-        $this->db = Connection::connect($config);
+        $this->postModel = new Post($db);
     }
 
     public function fetchModal(): void
@@ -36,7 +40,7 @@ class PostController extends Controller
         if ($action == 'add')
         {
             $data['modal_title'] = 'New Post';
-            $columns = $this->getTableColumns();
+            $columns = $this->postModel->getTableColumns();
 
             foreach ($columns as $column) {
                 $columnName = $column['COLUMN_NAME'];
@@ -66,7 +70,8 @@ class PostController extends Controller
 
             $data['form_template'] = $form_template;
         }
-        elseif ($action == 'edit') {
+        elseif ($action == 'edit')
+        {
             $data['modal_title'] = 'Edit Post';
         }
 
@@ -88,11 +93,10 @@ class PostController extends Controller
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
             $user_id = $_SESSION['user_id'];
+            $title = Helper::sanitizeInput($_POST['title'] ?? null);
+            $content = Helper::sanitizeInput($_POST['content'] ?? null);
 
-            $title = $_POST['title'] ?? null;
-            $content = $_POST['content'] ?? null;
-
-            if (empty($title) || empty($content)) // Validate the input data
+            if (empty($user_id) || empty($title) || empty($content)) // Validate the input data
             {
                 echo json_encode(['error' => 'All fields must be filled']);
             }
@@ -100,15 +104,13 @@ class PostController extends Controller
             {
                 try // Insert the new post into the database
                 {
-                    $stmt = $this->db->prepare("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)");
-                    $stmt->execute([$user_id, $title, $content]);
+                    $this->postModel->createPost($user_id, $title, $content);
 
                     echo json_encode(['success' => 'Post created successfully']); // Send a success response
                 }
                 catch (PDOException $e)
                 {
 
-                    http_response_code(500); // Send an error response if the insert fails
                     echo json_encode(['error' => 'Failed to create post: ' . $e->getMessage()]);
                 }
             }
@@ -123,26 +125,21 @@ class PostController extends Controller
     {
         session_start();
 
-        if (isset($_SESSION['user_id'])) {
-            $userId = $_SESSION['user_id'];
+        if (isset($_SESSION['user_id']))
+        {
+            $user_id = $_SESSION['user_id'];
 
-            $stmt = $this->db->prepare(
-                "SELECT posts.*, users.username
-                        FROM posts
-                            INNER JOIN users ON posts.user_id = users.id
-                        WHERE user_id = :user_id
-                            ORDER BY id DESC");
-            $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->execute();
-            $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if ($posts) {
-                echo json_encode(['posts' => $posts]);
-            } else {
+            if ($this->postModel->getAllPosts($user_id))
+            {
+                echo json_encode(['posts' => $this->postModel->getAllPosts($user_id)]);
+            }
+            else
+            {
                 echo json_encode(['posts' => []]);
             }
-        } else {
-            http_response_code(401); // Unauthorized
+        }
+        else
+        {
             echo json_encode(['error' => 'User not authenticated']);
         }
     }
@@ -182,14 +179,5 @@ class PostController extends Controller
                 }
             }
         }
-    }
-
-    private function getTableColumns(): false|array
-    {
-        $table_name = "posts";
-        $stmt = $this->db->prepare("SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table");
-        $stmt->bindParam(':table', $table_name);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
