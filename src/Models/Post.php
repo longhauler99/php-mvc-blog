@@ -22,10 +22,10 @@ class Post
         return $stmt->execute();
     }
 
-    public function getOnePost($post_id): false|array
+    public function getOnePost($id)
     {
-        $stmt = $this->db->prepare("SELECT title, content FROM posts WHERE id = :post_id");
-        $stmt->bindParam(':user_id', $post_id, PDO::PARAM_INT);
+        $stmt = $this->db->prepare("SELECT title, content FROM `posts` WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetch(PDO::FETCH_ASSOC);

@@ -72,17 +72,47 @@ class PostController extends Controller
                 ';
                 }
             }
-
-            $data['form_template'] = $form_template;
         }
         elseif ($action == 'edit')
         {
             $data['modal_title'] = 'Edit Post';
+            $columns = $this->postModel->getTableColumns();
+            $post = $this->postModel->getOnePost($id);
 
-            if(!$this->postModel->getOnePost($id))
+            foreach ($columns as $column)
             {
-                Helper::escalateErrors($errors, 'Post not found');
+                $columnName = $column['COLUMN_NAME'];
+                $columnType = $column['DATA_TYPE'];
+
+                if (in_array($columnName, ["id", "created_at", "updated_at"]))
+                {
+                    continue;
+                }
+                elseif ($columnType === 'varchar' && $columnName === 'title')
+                {
+                    $label = 'Title';
+                    $value = $post[$columnName] ?? '';
+                    $form_template .= '
+                    <div class="mb-3">
+                        <label for="' . $columnName . '" class="form-label">' . $label . '</label>
+                        <input type="text" class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '">
+                    </div>
+                    ';
+                }
+                elseif ($columnType === 'text' && $columnName === 'content')
+                {
+                    $label = 'Description';
+                    $value = $post[$columnName] ?? '';
+                    $form_template .= '
+                    <div class="mb-3">
+                        <label for="' . $columnName . '" class="form-label">' . $label . '</label>
+                        <textarea class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="5">' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>
+                    </div>
+                    ';
+                }
             }
+
+            $data['form_template'] = $form_template;
         }
 
         echo json_encode(['success' => 'Request sent successfully', 'data' => $data]);
