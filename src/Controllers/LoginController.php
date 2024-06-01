@@ -33,13 +33,11 @@ class LoginController extends Controller
 
             if (empty($username) || empty($email) || empty($password)) // Validate the input data
             {
-                $errors[] = 'All fields must be filled';
-                Helper::escalateErrors($errors);
+                Helper::escalateErrors($errors, 'All fields must be filled');
             }
             elseif($this->userModel->userExists($email)) // Check if user already exists
             {
-                $errors[] = 'Email already exists';
-                Helper::escalateErrors($errors);
+                Helper::escalateErrors($errors, 'Email already exists');
             }
             else
             {

@@ -29,11 +29,11 @@ class PostController extends Controller
 
         if (!isset($_SESSION['user_id']))
         {
-            $errors[] = 'Unauthorized';
-            Helper::escalateErrors($errors);
+            Helper::escalateErrors($errors, 'Unauthorized');
         }
 
-        $action = $_POST["action"] ?? '';
+        $action = Helper::sanitizeInput($_POST["action"] ?? '');
+        $id = Helper::sanitizeInput($_POST["id"] ?? '');
 
         $form_template = '';
 
@@ -42,13 +42,17 @@ class PostController extends Controller
             $data['modal_title'] = 'New Post';
             $columns = $this->postModel->getTableColumns();
 
-            foreach ($columns as $column) {
+            foreach ($columns as $column)
+            {
                 $columnName = $column['COLUMN_NAME'];
                 $columnType = $column['DATA_TYPE'];
 
-                if (in_array($columnName, ["id", "created_at", "updated_at"])) {
+                if (in_array($columnName, ["id", "created_at", "updated_at"]))
+                {
                     continue;
-                } elseif ($columnType === 'varchar' && $columnName === 'title') {
+                }
+                elseif ($columnType === 'varchar' && $columnName === 'title')
+                {
                     $label = 'Title';
                     $form_template .= '
                     <div class="mb-3">
@@ -56,7 +60,9 @@ class PostController extends Controller
                         <input type="text" class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '">
                     </div>
                 ';
-                } elseif ($columnType === 'text' && $columnName === 'content') {
+                }
+                elseif ($columnType === 'text' && $columnName === 'content')
+                {
                     $label = 'Description';
                     $form_template .= '
                     <div class="mb-3">
@@ -72,6 +78,11 @@ class PostController extends Controller
         elseif ($action == 'edit')
         {
             $data['modal_title'] = 'Edit Post';
+
+            if(!$this->postModel->getOnePost($id))
+            {
+                Helper::escalateErrors($errors, 'Post not found');
+            }
         }
 
         echo json_encode(['success' => 'Request sent successfully', 'data' => $data]);
@@ -85,8 +96,7 @@ class PostController extends Controller
 
         if(!isset($_SESSION['user_id']))
         {
-            $errors[] = 'Unauthorized';
-            Helper::escalateErrors($errors);
+            Helper::escalateErrors($errors, 'Unauthorized');
         }
 
         if($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -151,8 +161,7 @@ class PostController extends Controller
 
         if(!isset($_SESSION['user_id']))
         {
-            $errors[] = 'Unauthorized';
-            Helper::escalateErrors($errors);
+            Helper::escalateErrors($errors, 'Unauthorized');
         }
 
         if($_SERVER['REQUEST_METHOD'] == 'POST')

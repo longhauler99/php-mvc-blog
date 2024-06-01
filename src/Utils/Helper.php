@@ -5,8 +5,17 @@ use Random\RandomException;
 
 class Helper
 {
-    public static function escalateErrors($errors): void
+    public static function escalateErrors($errors, $msg): void
     {
+        if($msg)
+        {
+            $errors[] = $msg;
+        }
+        else
+        {
+            echo json_encode(['errors' => "No message was passed!"]);
+        }
+
         if (!empty($errors))
         {
             echo json_encode(['errors' => $errors]);
