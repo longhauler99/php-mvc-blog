@@ -16,9 +16,13 @@ class LoginController extends Controller
         parent::__construct();
         $this->userModel = new User($db);
     }
+
+    /**
+     * @throws \Exception
+     */
     public function index(): void
     {
-        $this->render('login');
+        $this->render('login.php');
     }
 
     public function register(): void

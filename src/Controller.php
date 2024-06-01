@@ -18,6 +18,16 @@ class Controller {
     protected function render($view, $data = []): void
     {
         extract($data);
-        include "Views/$view.php";
+
+        $viewPath = dirname(__DIR__) . '/src/Views/' . $view;
+
+        if (file_exists($viewPath))
+        {
+            include $viewPath;
+        }
+        else
+        {
+            throw new \Exception("View file not found: " . $viewPath);
+        }
     }
 }

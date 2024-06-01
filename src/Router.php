@@ -2,7 +2,8 @@
 
 namespace App;
 
-class Router {
+class Router
+{
     protected array $routes = [];
 
     public function addRoute($route, $controller, $action, $method): void
@@ -33,7 +34,8 @@ class Router {
             $routePattern = str_replace('/', '\/', $routePattern);
 
             if (preg_match('/^' . $routePattern . '$/', $uri, $matches)) {
-                array_shift($matches);
+                array_shift($matches); // Remove the full match
+
                 $controller = $data['controller'];
                 $action = $data['action'];
 
@@ -47,3 +49,4 @@ class Router {
         throw new \Exception("No route found for URI: $uri");
     }
 }
+
