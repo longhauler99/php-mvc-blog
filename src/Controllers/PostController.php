@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Core\Connection;
+use App\Utils\Helper;
 use PDO;
 use PDOException;
 
@@ -25,7 +26,7 @@ class PostController extends Controller
         if (!isset($_SESSION['user_id']))
         {
             $errors[] = 'Unauthorized';
-            $this->EscalateErrors($errors);
+            Helper::escalateErrors($errors);
         }
 
         $action = $_POST["action"] ?? '';
@@ -81,7 +82,7 @@ class PostController extends Controller
         if(!isset($_SESSION['user_id']))
         {
             $errors[] = 'Unauthorized';
-            $this->EscalateErrors($errors);
+            Helper::escalateErrors($errors);
         }
 
         if($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -155,7 +156,7 @@ class PostController extends Controller
         if(!isset($_SESSION['user_id']))
         {
             $errors[] = 'Unauthorized';
-            $this->EscalateErrors($errors);
+            Helper::escalateErrors($errors);
         }
 
         if($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -190,13 +191,5 @@ class PostController extends Controller
         $stmt->bindParam(':table', $table_name);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    public function EscalateErrors($errors): void // Error propagation
-    {
-        if (!empty($errors))
-        {
-            echo json_encode(['errors' => $errors]);
-        }
     }
 }

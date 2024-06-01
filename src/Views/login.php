@@ -18,7 +18,6 @@
 <body>
 <div class="main">
     <input type="checkbox" id="chk" aria-hidden="true" checked>
-<?php print_r($data); ?>
     <div class="signup">
 <!--        <form id="signup-form" class="form" action="/xregister" method="POST">-->
         <form id="signup-form" class="form">
@@ -59,6 +58,7 @@
         }
         else if(eln.matches('.login-btn'))
         {
+            event.preventDefault();
             const apiUrl = '/login';
             let queryCue = new FormData(document.getElementById('login-form'));
             Save1Record(apiUrl, queryCue);
