@@ -18,7 +18,7 @@
 <body>
 <div class="main">
     <input type="checkbox" id="chk" aria-hidden="true" checked>
-
+<?php print_r($data); ?>
     <div class="signup">
 <!--        <form id="signup-form" class="form" action="/xregister" method="POST">-->
         <form id="signup-form" class="form">
@@ -36,7 +36,7 @@
             <label for="chk" aria-hidden="true">Login</label>
             <input type="email" name="email" placeholder="Email Address" required="">
             <input type="password" name="password" placeholder="Password" required="">
-            <button class="login-btn" type="button">Login</button>
+            <button class="login-btn" type="submit">Login</button>
         </form>
     </div>
 </div>

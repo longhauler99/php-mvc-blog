@@ -125,21 +125,33 @@
     {
         const eln = event.target;
 
-        if(eln.matches('.new-post'))
+        if(eln.matches("BUTTON"))
         {
-            const apiUrl = '/fetchModal';
-            fetchModal(apiUrl, 'add');
+            if(eln.matches('.new-post'))
+            {
+                const apiUrl = '/fetchModal';
+                fetchModal(apiUrl, 'add');
+            }
+            else if(eln.matches('#saveBtn'))
+            {
+                const apiUrl = '/newpost';
+                const apiUrl2 = '/fetchPosts';
+                let queryCue = new FormData(liveForm.form);
+                Save1Record(apiUrl, queryCue, apiUrl2);
+            }
+            else if(eln.matches('.closeBtn'))
+            {
+                liveForm.close();
+            }
         }
-        else if(eln.matches('#saveBtn'))
+        else if(eln.matches("LI A"))
         {
-            const apiUrl = '/newpost';
-            const apiUrl2 = '/fetchPosts';
-            let queryCue = new FormData(liveForm.form);
-            Save1Record(apiUrl, queryCue, apiUrl2);
-        }
-        else if(eln.matches('.closeBtn'))
-        {
-            liveForm.close();
+            if(eln.matches(".edit-post"))
+            {
+                const apiUrl = '/fetchModal';
+                fetchModal(apiUrl, "edit", eln.dataset.id);
+                // alert(eln.dataset.id);
+            }
         }
     }
 
@@ -233,8 +245,8 @@
                                             Action
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li data-id="${post.id}"><a class="dropdown-item">Edit</a></li>
-                                            <li data-id="${post.id}"><a class="dropdown-item">Delete</a></li>
+                                            <li><a data-id="${post.id}" class="dropdown-item edit-post">Edit</a></li>
+                                            <li><a data-id="${post.id}" class="dropdown-item delete-post">Delete</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -279,12 +291,13 @@
         toast.show();
     }
 
-    async function fetchModal(apiUrl, action)
+    async function fetchModal(apiUrl, action, id=null)
     {
         fetch(apiUrl, {
             method: 'POST',
             body: new URLSearchParams({
-                action: action
+                action: action,
+                id: id
             })
         })
             .then(response => {

@@ -65,6 +65,9 @@ class PostController extends Controller
 
             $data['form_template'] = $form_template;
         }
+        elseif ($action == 'edit') {
+            $data['modal_title'] = 'Edit Post';
+        }
 
         echo json_encode(['success' => 'Request sent successfully', 'data' => $data]);
     }

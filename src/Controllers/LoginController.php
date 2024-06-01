@@ -3,16 +3,19 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\Core\Connection;
+use App\Models\User;
 use PDO;
 use PDOException;
 
 class LoginController extends Controller
 {
-    protected $db;
-    public function __construct($config)
+//    protected PDO $db;
+    private User $userModel;
+
+    public function __construct($db)
     {
         parent::__construct();
-        $this->db = Connection::connect($config);
+        $this->userModel = new User($db);
     }
     public function index(): void
     {
@@ -34,7 +37,7 @@ class LoginController extends Controller
                 $errors[] = 'All fields must be filled';
                 $this->EscalateErrors($errors);
             }
-            elseif($this->userExists($email)) // Check if user already exists
+            elseif($this->userModel->userExists($email)) // Check if user already exists
             {
                 $errors[] = 'Email already exists';
                 $this->EscalateErrors($errors);
@@ -45,8 +48,9 @@ class LoginController extends Controller
 
                 try // Insert the new user into the database
                 {
-                    $stmt = $this->db->prepare("INSERT INTO users (UserName, Email, Password) VALUES (?, ?, ?)");
-                    $stmt->execute([$username, $email, $hashedPassword]);
+                    $this->userModel->createUser($username, $email, $hashedPassword);
+//                    $stmt = $this->db->prepare("INSERT INTO users (UserName, Email, Password) VALUES (?, ?, ?)");
+//                    $stmt->execute([$username, $email, $hashedPassword]);
 
                     echo json_encode(['success' => 'User registered successfully', 'redirect' => '/']);
                 }
@@ -77,7 +81,7 @@ class LoginController extends Controller
             }
             else
             {
-                if($this->userExists($email))
+                if($this->userModel->userExists($email))
                 {
                     if($this->authenticateUser($email, $password))
                     {
@@ -150,14 +154,6 @@ class LoginController extends Controller
         return false;
     }
 
-    private function userExists($email): bool
-    {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM `users` WHERE email = :email");
-        $stmt->execute(['email' => $email]);
-        $count = $stmt->fetchColumn();
-
-        return $count > 0;
-    }
 
     private function getUserInfo($email)
     {
