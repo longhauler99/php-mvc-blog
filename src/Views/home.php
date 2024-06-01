@@ -148,6 +148,14 @@
                 queryCue.append('id', liveForm.recKey);
                 Save1Record(apiUrl, queryCue, apiUrl2);
             }
+            else if(eln.matches('.del-btn'))
+            {
+                const apiUrl = '/deletepost';
+                const apiUrl2 = '/fetchPosts';
+                let queryCue = new FormData();
+                queryCue.append('id', liveForm.recKey);
+                Save1Record(apiUrl, queryCue, apiUrl2);
+            }
             else if(eln.matches('.closeBtn'))
             {
                 liveForm.form.reset();
@@ -160,6 +168,13 @@
             {
                 const apiUrl = '/fetchModal';
                 liveForm.SetDataAction('edit');
+                fetchModal(apiUrl, liveForm.dataAction, eln.dataset.id);
+                // alert(eln.dataset.id);
+            }
+            else if(eln.matches(".delete-post"))
+            {
+                const apiUrl = '/fetchModal';
+                liveForm.SetDataAction('del');
                 fetchModal(apiUrl, liveForm.dataAction, eln.dataset.id);
                 // alert(eln.dataset.id);
             }

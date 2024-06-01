@@ -22,14 +22,24 @@ class Post
         return $stmt->execute();
     }
 
-    public function updatePost($post_id, $title, $content): bool
+    public function updatePost($post_id, $user_id, $title, $content): bool
     {
-            $stmt = $this->db->prepare("UPDATE `posts` SET title = :title, content = :content WHERE id = :post_id");
-            $stmt->bindParam(':title', $title);
-            $stmt->bindParam(':content', $content);
-            $stmt->bindParam(':post_id', $post_id);
+        $stmt = $this->db->prepare("UPDATE `posts` SET title = :title, content = :content WHERE id = :post_id AND user_id = :user_id");
+        $stmt->bindParam(':post_id', $post_id);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':content', $content);
 
             return $stmt->execute();
+    }
+
+    public function deletePost($post_id, $user_id): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM posts WHERE id = :id AND user_id = :user_id");
+        $stmt->bindParam(':id', $post_id);
+        $stmt->bindParam(':user_id', $user_id);
+
+        return $stmt->execute();
     }
 
     public function getOnePost($id)

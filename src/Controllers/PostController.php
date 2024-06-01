@@ -116,6 +116,47 @@ class PostController extends Controller
             $data['post_id'] = $id;
             $data['form_template'] = $form_template;
         }
+        elseif ($action == 'del')
+        {
+            $data['modal_title'] = 'Delete Post';
+            $columns = $this->postModel->getTableColumns();
+            $post = $this->postModel->getOnePost($id);
+
+            foreach ($columns as $column)
+            {
+                $columnName = $column['COLUMN_NAME'];
+                $columnType = $column['DATA_TYPE'];
+
+                if (in_array($columnName, ["id", "created_at", "updated_at"]))
+                {
+                    continue;
+                }
+                elseif ($columnType === 'varchar' && $columnName === 'title')
+                {
+                    $label = 'Title';
+                    $value = $post[$columnName] ?? '';
+                    $form_template .= '
+                    <div class="mb-3">
+                        <label for="' . $columnName . '" class="form-label">' . $label . '</label>
+                        <input type="text" class="form-control post-' . $columnName . ', bg-danger" name="' . $columnName . '" id="' . $columnName . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '" disabled>
+                    </div>
+                    ';
+                }
+                elseif ($columnType === 'text' && $columnName === 'content')
+                {
+                    $label = 'Description';
+                    $value = $post[$columnName] ?? '';
+                    $form_template .= '
+                    <div class="mb-3">
+                        <label for="' . $columnName . '" class="form-label">' . $label . '</label>
+                        <textarea class="form-control post-' . $columnName . ' bg-danger" name="' . $columnName . '" id="' . $columnName . '" rows="5" disabled>' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>
+                    </div>
+                    ';
+                }
+            }
+            $data['post_id'] = $id;
+            $data['form_template'] = $form_template;
+        }
 
         echo json_encode(['success' => 'Request sent successfully', 'data' => $data]);
     }
@@ -190,8 +231,9 @@ class PostController extends Controller
         session_start();
 
         $errors = [];
+        $user_id = $_SESSION['user_id'];
 
-        if(!isset($_SESSION['user_id']))
+        if(!isset($user_id))
         {
             Helper::escalateErrors($errors, 'Unauthorized');
         }
@@ -210,13 +252,53 @@ class PostController extends Controller
             {
                 try // Insert the new post into the database
                 {
-                    $this->postModel->updatePost($post_id, $title, $content);
+                    $this->postModel->updatePost($post_id, $user_id, $title, $content);
 
                     echo json_encode(['success' => 'Post updated successfully']); // Send a success response
                 }
                 catch (PDOException $e)
                 {
                     echo json_encode(['error' => 'Failed to update post: ' . $e->getMessage()]);
+                }
+            }
+        }
+        else
+        {
+            echo json_encode(['error' => 'Method Not Allowed']);
+        }
+    }
+
+    public function deletePost(): void
+    {
+        session_start();
+
+        $errors = [];
+        $user_id = $_SESSION['user_id'];
+
+        if(!isset($user_id))
+        {
+            Helper::escalateErrors($errors, 'Unauthorized');
+        }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST')
+        {
+            $post_id = Helper::sanitizeInput($_POST['id'] ?? null);
+
+            if (empty($post_id)) // Validate the input data
+            {
+                echo json_encode(['error' => 'All fields must be filled']);
+            }
+            else
+            {
+                try // Insert the new post into the database
+                {
+                    $this->postModel->deletePost($post_id, $user_id);
+
+                    echo json_encode(['success' => 'Post deleted successfully']); // Send a success response
+                }
+                catch (PDOException $e)
+                {
+                    echo json_encode(['error' => 'Failed to delete post: ' . $e->getMessage()]);
                 }
             }
         }
