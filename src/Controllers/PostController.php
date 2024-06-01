@@ -67,7 +67,6 @@ class PostController extends Controller
                 }
             }
 
-
             $data['form_template'] = $form_template;
         }
         elseif ($action == 'edit')
