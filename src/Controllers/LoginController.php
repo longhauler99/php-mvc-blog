@@ -2,10 +2,8 @@
 namespace App\Controllers;
 
 use App\Controller;
-use App\Core\Connection;
 use App\Models\User;
 use App\Utils\Helper;
-use PDO;
 use PDOException;
 
 class LoginController extends Controller
@@ -27,9 +25,9 @@ class LoginController extends Controller
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST') // Get the form data
         {
-            $username = $_POST['username'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
+            $username = Helper::sanitizeInput($_POST['username'] ?? null);
+            $email = Helper::sanitizeInput($_POST['email'] ?? null);
+            $password = Helper::sanitizeInput($_POST['password'] ?? null);
 
             $errors = [];
 
@@ -69,8 +67,8 @@ class LoginController extends Controller
     {
         if($_SERVER['REQUEST_METHOD'] == 'POST')
         {
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
+            $email = Helper::sanitizeInput($_POST['email'] ?? null);
+            $password = Helper::sanitizeInput($_POST['password'] ?? null);
 
             if (empty($email) || empty($password)) // Validate the input data
             {
@@ -110,17 +108,23 @@ class LoginController extends Controller
     public function edit($userId): void
     {
         // Handle user edit logic here
-        $username = $_POST['username'] ?? null;
-        $email = $_POST['email'] ?? null;
-        $password = $_POST['password'] ?? null;
+        $username = Helper::sanitizeInput($_POST['username'] ?? null);
+        $email = Helper::sanitizeInput($_POST['email'] ?? null);
+        $password = Helper::sanitizeInput($_POST['password'] ?? null);
 
-        if ($username && $email) {
-            if ($this->userModel->updateUser($userId, $username, $email, $password)) {
+        if ($username && $email)
+        {
+            if ($this->userModel->updateUser($userId, $username, $email, $password))
+            {
                 echo json_encode(['success' => 'User updated successfully']);
-            } else {
+            }
+            else
+            {
                 echo json_encode(['error' => 'Failed to update user']);
             }
-        } else {
+        }
+        else
+        {
             echo json_encode(['error' => 'Username and email are required']);
         }
     }
@@ -128,9 +132,12 @@ class LoginController extends Controller
     public function delete($userId): void
     {
         // Handle user deletion logic here
-        if ($this->userModel->deleteUser($userId)) {
+        if ($this->userModel->deleteUser($userId))
+        {
             echo json_encode(['success' => 'User deleted successfully']);
-        } else {
+        }
+        else
+        {
             echo json_encode(['error' => 'Failed to delete user']);
         }
     }
