@@ -40,6 +40,7 @@ class PostController extends Controller
         if ($action == 'add')
         {
             $data['modal_title'] = 'New Post';
+            $data['modal_button'] = 'Save';
             $columns = $this->postModel->getTableColumns();
 
             foreach ($columns as $column)
@@ -72,10 +73,13 @@ class PostController extends Controller
                 ';
                 }
             }
+
+            $data['form_template'] = $form_template;
         }
         elseif ($action == 'edit')
         {
             $data['modal_title'] = 'Edit Post';
+            $data['modal_button'] = 'Update';
             $columns = $this->postModel->getTableColumns();
             $post = $this->postModel->getOnePost($id);
 

@@ -141,6 +141,7 @@
             }
             else if(eln.matches('.closeBtn'))
             {
+                liveForm.form.reset();
                 liveForm.close();
             }
         }
@@ -313,6 +314,7 @@
                 {
                     liveForm.open();
                     liveForm.title.innerText = returnData.data.modal_title;
+                    liveForm.saveButton.innerText = returnData.data.modal_button;
                     liveForm.form.querySelector('.inputWrapper').innerHTML = returnData.data.form_template;
                     // alert(returnData.success);return;
                 }
