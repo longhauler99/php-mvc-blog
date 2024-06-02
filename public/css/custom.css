@@ -1,0 +1,17 @@
+
+#genericForm input,
+#genericForm textarea {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, .2) !important;
+}
+
+.col .post-title:hover,
+.col .post-title:active {
+    color: #0a53be !important;
+    text-underline: #0a53be;
+    cursor: pointer;
+    text-shadow: #1a1d20 1px 1px !important;
+}
+
+LI A {
+    cursor: pointer;
+}
