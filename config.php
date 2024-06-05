@@ -5,5 +5,5 @@ return [
         'dbname' => 'blog_daily',
         'username' => 'root',
         'password' => 'root',
-    ]
+    ] 
 ];
