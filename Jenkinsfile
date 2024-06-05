@@ -12,7 +12,7 @@ pipeline {
             steps {
                 // sh 'composer update'
                 // sh 'composer install'
-                // sh 'ls -la vendor/bin'
+                sh 'ls -la vendor/bin'
             }
         }
 
