@@ -22,7 +22,7 @@ WORKDIR /var/www/html
 
 # Copy composer files and install dependencies
 COPY composer.json composer.lock ./
-RUN composer install --no-interaction --no-plugins --no-scripts --ignore-platform-req=ext-dom
+RUN composer install --no-interaction --no-plugins --no-scripts
 
 # Copy the rest of the application files into the container
 COPY . /var/www/html/
