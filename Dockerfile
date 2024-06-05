@@ -1,7 +1,5 @@
 # Use the official PHP image as the base image
-FROM php
-
-FROM php:latest
+FROM php:8.2-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -13,8 +11,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     zlib1g-dev \
-    && docker-php-ext-install pdo pdo_mysql mysqli gd dom mbstring zip
-
+    && docker-php-ext-install pdo_mysql mysqli gd
+    
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
