@@ -1,9 +1,9 @@
-# Use the official PHP image as the base image
-FROM php:8.2-cli
+# Use a multi-stage build
+# Stage 1: Build environment
+FROM php:8.2-cli AS build
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    curl \
     libpng-dev \
     libjpeg-dev \
     libxml2-dev
@@ -21,8 +21,14 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-interaction --no-plugins --no-scripts
 
-# Copy the rest of the application files into the container
-COPY . /var/www/html/
+# Stage 2: Production environment
+FROM php:8.2-cli
+
+# Copy application files from build environment
+COPY --from=build /var/www/html /var/www/html
+
+# Set working directory
+WORKDIR /var/www/html
 
 # Expose the port the app runs on
 EXPOSE 9999 

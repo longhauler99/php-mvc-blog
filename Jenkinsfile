@@ -10,15 +10,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'composer install'
-                sh 'ls -la vendor/bin'
+                sh 'composer install --no-interaction'
             }
         }
 
         stage('Make PHPUnit Executable') {
             steps {
                 sh 'chmod +x vendor/bin/phpunit'
-
             }
         }
 
@@ -28,8 +26,14 @@ pipeline {
             }
         }
 
+        stage('Cleanup') {
+            steps {
+                // Clean up temporary files or resources
+            }
+        }
+
         stage('Deploy') {
-            steps{
+            steps {
                 echo 'Deploying....'
             }
         }
