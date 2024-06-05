@@ -10,6 +10,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
+                sh 'composer update'
                 sh 'composer install'
                 sh 'ls -la vendor/bin'
             }
