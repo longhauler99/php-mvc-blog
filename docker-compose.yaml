@@ -40,10 +40,10 @@ services:
     image: docker-jenkins-blueocean:2.452.1-1
     container_name: mvc-jenkins
     restart: on-failure
-    # environment:
-    #   DOCKER_HOST: tcp://docker:2376
-    #   DOCKER_CERT_PATH: /certs/client
-    #   DOCKER_TLS_VERIFY: "1"
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      # DOCKER_TLS_VERIFY: "1"
+      # DOCKER_CERT_PATH: /certs/client
     volumes:
       - jenkins-data:/var/jenkins_home
       # - jenkins-docker-certs:/certs/client:ro
