@@ -9,7 +9,7 @@ pipeline {
         }
 
         stage('Install Dependencies') {
-            steps {
+            steps { 
                 sh 'composer install --no-interaction'
             }
         }
