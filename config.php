@@ -1,9 +1,9 @@
 <?php
 return [
     'db' => [
-        'server' => 'localhost',
+        'server' => 'mvc-db',
         'dbname' => 'blog_daily',
         'username' => 'root',
-        'password' => '',
+        'password' => 'root',
     ]
 ];
