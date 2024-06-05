@@ -6,6 +6,7 @@
     <title><?= htmlspecialchars($title) ?></title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="node_modules/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
 <div class="mb-5">

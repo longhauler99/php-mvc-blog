@@ -57,7 +57,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <input type="text" class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '">
+                        <input type="text" class="form-control input-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '">
                     </div>
                 ';
                 }
@@ -67,7 +67,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <textarea class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="5"></textarea>
+                        <textarea class="form-control input-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="5"></textarea>
                     </div>
                 ';
                 }
@@ -97,7 +97,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <input type="text" class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '">
+                        <input type="text" class="form-control input-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '">
                     </div>
                     ';
                 }
@@ -108,7 +108,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <textarea class="form-control post-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="5">' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>
+                        <textarea class="form-control input-' . $columnName . '" name="' . $columnName . '" id="' . $columnName . '" rows="5">' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>
                     </div>
                     ';
                 }
@@ -138,7 +138,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <input type="text" class="form-control post-' . $columnName . ', bg-danger" name="' . $columnName . '" id="' . $columnName . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '" disabled>
+                        <input type="text" class="form-control input-' . $columnName . ', bg-danger" name="' . $columnName . '" id="' . $columnName . '" value="' . htmlspecialchars($value, ENT_QUOTES) . '" disabled>
                     </div>
                     ';
                 }
@@ -149,7 +149,7 @@ class PostController extends Controller
                     $form_template .= '
                     <div class="mb-3">
                         <label for="' . $columnName . '" class="form-label">' . $label . '</label>
-                        <textarea class="form-control post-' . $columnName . ' bg-danger" name="' . $columnName . '" id="' . $columnName . '" rows="5" disabled>' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>
+                        <textarea class="form-control input-' . $columnName . ' bg-danger" name="' . $columnName . '" id="' . $columnName . '" rows="5" disabled>' . htmlspecialchars($value, ENT_QUOTES) . '</textarea>
                     </div>
                     ';
                 }
