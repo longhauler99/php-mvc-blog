@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'timot/php-mvc-framework',
-        'pretty_version' => 'dev-main',
-        'version' => 'dev-main',
-        'reference' => 'd6b66f3b5f968fedaf6e5da2894366885541dcd4',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
+        'reference' => null,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -245,9 +245,9 @@
             'dev_requirement' => true,
         ),
         'timot/php-mvc-framework' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => 'd6b66f3b5f968fedaf6e5da2894366885541dcd4',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
+            'reference' => null,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

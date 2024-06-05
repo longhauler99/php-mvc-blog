@@ -1,15 +1,12 @@
-# Use a multi-stage build
-# Stage 1: Build environment
-FROM php:8.2-cli AS build
+# Use the official PHP image as the base image
+FROM php
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libxml2-dev
+RUN apt-get update && apt-get install -y git unzip zip curl \
+    libpng-dev libjpeg-dev libxml2-dev libzip-dev zlib1g-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql gd dom
+# RUN docker-php-ext-install mysqli pdo pdo_mysql gd dom mbstring zip
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -19,16 +16,21 @@ WORKDIR /var/www/html
 
 # Copy composer files and install dependencies
 COPY composer.json composer.lock ./
-RUN composer install --no-interaction --no-plugins --no-scripts
 
-# Stage 2: Production environment
-FROM php:8.2-cli
+# Create a non-root user and change ownership of the working directory
+RUN useradd -m composer && chown -R composer /var/www/html
 
-# Copy application files from build environment
-COPY --from=build /var/www/html /var/www/html
+# Switch to the non-root user
+USER composer
 
-# Set working directory
-WORKDIR /var/www/html
+# Install composer dependencies
+RUN composer install --no-interaction --no-plugins --no-scripts --no-suggest
+
+# Switch back to root to copy application files
+USER root
+
+# Copy the rest of the application files into the container
+COPY . /var/www/html/
 
 # Expose the port the app runs on
 EXPOSE 9999 

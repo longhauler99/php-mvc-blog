@@ -29,28 +29,5 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: ""
 
-  docker-jenkins-blueocean:
-    image: docker-jenkins-blueocean:2.452.1-1
-    container_name: docker-jenkins-blueocean
-    restart: on-failure
-    environment:
-      DOCKER_HOST: tcp://docker:2376
-      DOCKER_CERT_PATH: /certs/client
-      DOCKER_TLS_VERIFY: "1"
-    volumes:
-      - jenkins-data:/var/jenkins_home
-      - jenkins-docker-certs:/certs/client:ro
-    ports:
-      - "8080:8080"
-      - "50000:50000"
-    networks:
-      - jenkins
-
-networks:
-  jenkins:
-
 volumes:
   mysql-data:
-  jenkins_home:
-  jenkins-data:
-  jenkins-docker-certs:
