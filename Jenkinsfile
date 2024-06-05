@@ -28,6 +28,7 @@ pipeline {
 
         stage('Cleanup') {
             steps {
+                echo 'Cleaning up..'
                 // Clean up temporary files or resources
             }
         }
