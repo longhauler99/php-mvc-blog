@@ -1,0 +1,34 @@
+version: '3'
+services:
+  mvc-blog:
+    build: .
+    container_name: php-app
+    ports:
+      - "9999:9999"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mvc-db
+
+  mvc-db:
+    image: mysql
+    container_name: mvc-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: blog_daily
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  mvc-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8081:80'
+    environment:
+      PMA_HOST: mvc-db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ""
+
+volumes:
+  mysql-data:
