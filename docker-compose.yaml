@@ -29,9 +29,10 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: ""
 
-  docker-jenkins-blueocean:
-    image: docker-jenkins-blueocean:2.452.1-1
-    container_name: docker-jenkins-blueocean
+  mvc-jenkins:
+    image: devsainar/php-mvc-blog:1.0
+    # image: docker-jenkins-blueocean:2.452.1-1
+    container_name: mvc-jenkins
     restart: on-failure
     environment:
       DOCKER_HOST: tcp://docker:2376
