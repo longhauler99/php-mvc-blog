@@ -28,7 +28,7 @@ RUN composer install --no-interaction --no-plugins --no-scripts --ignore-platfor
 COPY . /var/www/html/
 
 # Expose the port the app runs on
-EXPOSE 9999
+EXPOSE 9999 
 
 # Command to run the application
 CMD ["php", "-S", "0.0.0.0:9999", "-t", "public"]
