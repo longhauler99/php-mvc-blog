@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'devsainar/php-mvc-blog:1.0'
+            image 'docker-jenkins-blueocean:2.452.1-1'
             args '-u root' // Ensure root user to have permissions to execute necessary commands
         }
     }
