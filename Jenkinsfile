@@ -1,23 +1,24 @@
-pipeline {
     agent any
-    // agent {
-    //     docker {
-    //         image 'php:8.2-cli' // Use a PHP Docker image for running the tests
-    //     }
-    // }
-
     stages {
-        // stage('Checkout') {
-        //     steps {
-        //         // Checkout the code from version control
-        //         git 'https://github.com/longhauler99/php-mvc-blog.git'
-        //     }
-        // }
+        stage('Install PHP') {
+            steps {
+                sh '''
+                if ! command -v php > /dev/null; then
+                    echo "PHP not found, installing PHP..."
+                    sudo apt-get update
+                    sudo apt-get install -y php
+                else
+                    echo "PHP is already installed"
+                fi
+                '''
+            }
+        }
         stage('Install Dependencies') {
             steps {
-                // Install Composer
-                sh 'curl -sS https://getcomposer.org/installer | php'
-                sh 'php composer.phar install'
+                sh '''
+                curl -sS https://getcomposer.org/installer | php
+                php composer.phar install
+                '''
             }
         }
         // stage('Run Tests') {
