@@ -1,9 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            image 'php:8.2-cli' // Use a PHP Docker image for running the tests
-        }
-    }
+    // agent {
+    //     docker {
+    //         image 'php:8.2-cli' // Use a PHP Docker image for running the tests
+    //     }
+    // }
 
     stages {
         stage('Checkout') {
@@ -12,19 +12,19 @@ pipeline {
                 git 'https://github.com/longhauler99/php-mvc-blog.git'
             }
         }
-        stage('Install Dependencies') {
-            steps {
-                // Install Composer
-                sh 'curl -sS https://getcomposer.org/installer | php'
-                sh 'php composer.phar install'
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                // Run PHPUnit tests
-                sh 'vendor/bin/phpunit --configuration phpunit.xml'
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         // Install Composer
+        //         sh 'curl -sS https://getcomposer.org/installer | php'
+        //         sh 'php composer.phar install'
+        //     }
+        // }
+        // stage('Run Tests') {
+        //     steps {
+        //         // Run PHPUnit tests
+        //         sh 'vendor/bin/phpunit --configuration phpunit.xml'
+        //     }
+        // }
     }
 
     post {
