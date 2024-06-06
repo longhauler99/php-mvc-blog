@@ -6,14 +6,14 @@ pipeline {
         }
     }
     stages {
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                curl -sS https://getcomposer.org/installer | php
-                php composer.phar install
-                '''
-            }
-        }
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh '''
+        //         curl -sS https://getcomposer.org/installer | php
+        //         php composer.phar install
+        //         '''
+        //     }
+        // }
         stage('Run Tests') {
             steps {
                 // Run PHPUnit tests
