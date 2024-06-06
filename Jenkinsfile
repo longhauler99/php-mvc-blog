@@ -8,11 +8,11 @@ pipeline {
     // }
 
     stages {
-        stage('Clean Vendor Directory') {
-            steps {
-                sh 'rm -rf vendor'
-            }
-        }
+        // stage('Clean Vendor Directory') {
+        //     steps {
+        //         sh 'rm -rf vendor'
+        //     }
+        // }
 
         stage('Make PHPUnit Executable') {
             steps {
