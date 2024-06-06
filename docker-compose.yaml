@@ -35,22 +35,8 @@ services:
     networks:
       - mvc-network
 
-  mvc-jenkins:
-    image: jenkins/jenkins:latest
-    container_name: mvc-jenkins
-    restart: on-failure 
-    volumes:
-      - jenkins-data:/var/jenkins_home
-      - .:/var/jenkins_home/workspace/your-php-app
-    ports:
-      - "8080:8080"
-      - "50000:50000" 
-    networks:
-      - mvc-network
-
 networks:
   mvc-network:
 
 volumes:
   mysql-data:
-  jenkins-data:
