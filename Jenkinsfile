@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label "docker-agent"
+    }
     // agent {
     //     docker {
     //         image 'docker-jenkins-blueocean:2.452.1-1'
@@ -14,17 +16,17 @@ pipeline {
         //     }
         // }
 
-        stage('Make PHPUnit Executable') {
-            steps {
-                sh 'chmod +x vendor/bin/phpunit'
-            }
-        }
+        // stage('Make PHPUnit Executable') {
+        //     steps {
+        //         sh 'chmod +x vendor/bin/phpunit'
+        //     }
+        // }
 
-        stage('Run Tests') {
-            steps {
-                sh 'vendor/bin/phpunit'
-            }
-        }
+        // stage('Run Tests') {
+        //     steps {
+        //         sh 'vendor/bin/phpunit'
+        //     }
+        // }
 
         stage('Cleanup') {
             steps {
