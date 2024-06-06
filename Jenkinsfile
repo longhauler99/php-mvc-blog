@@ -27,12 +27,12 @@ pipeline {
                 '''
             }
         }
-        // stage('Run Tests') {
-        //     steps {
-        //         // Run PHPUnit tests
-        //         sh 'vendor/bin/phpunit --configuration phpunit.xml'
-        //     }
-        // }
+        stage('Run Tests') {
+            steps {
+                // Run PHPUnit tests
+                sh 'vendor/bin/phpunit --configuration phpunit.xml'
+            }
+        }
     }
 
     post {
