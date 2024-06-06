@@ -1,31 +1,43 @@
 pipeline {
-    agent {
-        docker {
-            image 'devsainar/php-mvc-blog:1.0' // Replace with your Docker Hub image and tag
-            args '-u root' // Use root user to avoid permission issues (optional)
-        }
-    }
+    agent any
+    
     stages {
-        // stage('Install Dependencies') {
-        //     steps {
-        //         sh '''
-        //         curl -sS https://getcomposer.org/installer | php
-        //         php composer.phar install
-        //         '''
-        //     }
-        // }
+        stage('Checkout') {
+            steps {
+                // Check out the code from the repository
+                checkout scm
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
+                }
+            }
+        }
         stage('Run Tests') {
             steps {
-                // Run PHPUnit tests
-                sh 'vendor/bin/phpunit --configuration phpunit.xml'
+                script {
+                    // Use the built Docker image to run tests
+                    def customImage = docker.image("php-mvc-blog:${env.BUILD_ID}")
+                    customImage.inside('-u root') {
+                        sh 'vendor/bin/phpunit --configuration phpunit.xml'
+                    }
+                }
             }
         }
     }
-
+    
     post {
         always {
             // Clean up workspace
             cleanWs()
+            
+            // Remove the Docker image
+            script {
+                sh "docker rmi php-mvc-blog:${env.BUILD_ID} || true"
+            }
         }
         success {
             // Notify on success
