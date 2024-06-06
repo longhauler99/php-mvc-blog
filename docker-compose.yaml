@@ -40,8 +40,8 @@ services:
     image: docker-jenkins-blueocean:2.452.1-1
     container_name: mvc-jenkins
     restart: on-failure 
-    # environment:
-      # DOCKER_HOST: tcp://docker:2376
+    environment:
+      DOCKER_HOST: tcp://docker:2376
       # DOCKER_TLS_VERIFY: "1"
       # DOCKER_CERT_PATH: /certs/client
     volumes:
@@ -51,10 +51,11 @@ services:
       - "8080:8080"
       - "50000:50000" 
     networks:
-      - php-mvc-network
+      - jenkins
 
 networks:
   php-mvc-network:
+  jenkins:
 
 volumes:
   mysql-data:
