@@ -21,16 +21,11 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube analysis') {
-            steps {
-                script {
-                    // Define SonarQube Scanner home
-                    def scannerHome = tool 'SonarQube Scanner'; // Replace with actual scanner installation name
-                    
-                    // Execute SonarQube Scanner
-                    withSonarQubeEnv('SonarQube Scanner') { // Replace with actual SonarQube server name
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
+        stage('SonarQube Analysis') {
+            script {
+                def scannerHome = tool 'SonarScanner';
+                withSonarQubeEnv() {
+                    sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
         }
