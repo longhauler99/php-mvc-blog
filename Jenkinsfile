@@ -1,4 +1,5 @@
 pipeline {
+    agent any
     // agent {
     //     docker {
     //         image 'php:8.2-cli' // Use a PHP Docker image for running the tests
