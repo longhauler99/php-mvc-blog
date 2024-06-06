@@ -7,19 +7,19 @@ pipeline {
     // }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the code from version control
-                git 'https://github.com/longhauler99/php-mvc-blog.git'
-            }
-        }
-        // stage('Install Dependencies') {
+        // stage('Checkout') {
         //     steps {
-        //         // Install Composer
-        //         sh 'curl -sS https://getcomposer.org/installer | php'
-        //         sh 'php composer.phar install'
+        //         // Checkout the code from version control
+        //         git 'https://github.com/longhauler99/php-mvc-blog.git'
         //     }
         // }
+        stage('Install Dependencies') {
+            steps {
+                // Install Composer
+                sh 'curl -sS https://getcomposer.org/installer | php'
+                sh 'php composer.phar install'
+            }
+        }
         // stage('Run Tests') {
         //     steps {
         //         // Run PHPUnit tests
