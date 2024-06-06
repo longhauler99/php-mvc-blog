@@ -1,10 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker-jenkins-blueocean:2.452.1-1'
-            args '-u root' // Ensure root user to have permissions to execute necessary commands
-        }
-    }
+    agent any
+    // agent {
+    //     docker {
+    //         image 'docker-jenkins-blueocean:2.452.1-1'
+    //         args '-u root' // Ensure root user to have permissions to execute necessary commands
+    //     }
+    // }
 
     stages {
         stage('Clean Vendor Directory') {
