@@ -6,7 +6,7 @@ services:
     container_name: docker
     privileged: true
     networks:
-      - jenkins
+      - jenkins 
     environment:
       DOCKER_TLS_CERTDIR: /certs
     volumes:
