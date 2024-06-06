@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  docker-dind: 
+    image: docker:dind
+    container_name: docker
+    privileged: true
+    networks:
+      - jenkins
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - jenkins-docker-certs:/certs/client
+      - jenkins-data:/var/jenkins_home
+    ports:
+      - "2376:2376"  # Expose port 2376 for Docker daemon
+    # Add any other configuration for jenkins-server if needed
+
+  jenkins-digitalocean:
+    image: jenkins-blueocean:2.452.1
+    container_name: jenkins-digitalocean
+    restart: on-failure
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: "1"
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - jenkins-docker-certs:/certs/client:ro
+    # Add any other configuration for jenkins-digitalocean if needed
+    networks:
+      - jenkins
+
+networks:
+  jenkins:
+    name: jenkins
+
+volumes:
+  jenkins-data:
+  jenkins-docker-certs:
