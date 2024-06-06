@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label "docker-agent"
-    }
+    agent any
     // agent {
     //     docker {
     //         image 'docker-jenkins-blueocean:2.452.1-1'
