@@ -1,19 +1,24 @@
 pipeline {
-    agent any
-    stages {
-        stage('Install PHP') {
-            steps {
-                sh '''
-                if ! command -v php > /dev/null; then
-                    echo "PHP not found, installing PHP..."
-                    sudo apt-get update
-                    sudo apt-get install -y php
-                else
-                    echo "PHP is already installed"
-                fi
-                '''
-            }
+    agent {
+        docker {
+            image 'devsainar/devsainar/php-mvc-blog:1.0' // Replace with your Docker Hub image and tag
+            args '-u root' // Use root user to avoid permission issues (optional)
         }
+    }
+    stages {
+        // stage('Install PHP') {
+        //     steps {
+        //         sh '''
+        //         if ! command -v php > /dev/null; then
+        //             echo "PHP not found, installing PHP..."
+        //             sudo apt-get update
+        //             sudo apt-get install -y php
+        //         else
+        //             echo "PHP is already installed"
+        //         fi
+        //         '''
+        //     }
+        // }
         stage('Install Dependencies') {
             steps {
                 sh '''
