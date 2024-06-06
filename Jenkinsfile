@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'devsainar/devsainar/php-mvc-blog:1.0' // Replace with your Docker Hub image and tag
+            image 'devsainar/php-mvc-blog:1.0' // Replace with your Docker Hub image and tag
             args '-u root' // Use root user to avoid permission issues (optional)
         }
     }
