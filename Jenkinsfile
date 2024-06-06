@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     // Define SonarQube Scanner home
-                    def scannerHome = tool 'SonarQubeScanner'; // Replace with actual scanner installation name
+                    def scannerHome = tool 'SonarQube Scanner'; // Replace with actual scanner installation name
                     
                     // Execute SonarQube Scanner
                     withSonarQubeEnv('SonarQube Scanner') { // Replace with actual SonarQube server name
