@@ -9,7 +9,7 @@ services:
     depends_on:
       - mvc-db
     networks:
-      - php-mvc-network
+      - mvc-network
 
   mvc-db:
     image: mysql
@@ -23,7 +23,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - php-mvc-network
+      - mvc-network
 
   mvc-phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -35,32 +35,24 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: ""
     networks:
-      - php-mvc-network
+      - mvc-network
 
   mvc-jenkins:
-    # image: devsainar/php-mvc-blog:1.0
-    image: docker-jenkins-blueocean:2.452.1-1
+    image: jenkins/jenkins:latest
     container_name: mvc-jenkins
     restart: on-failure 
-    environment:
-      DOCKER_HOST: tcp://docker:2376
-      # DOCKER_TLS_VERIFY: "1"
-      # DOCKER_CERT_PATH: /certs/client
     volumes:
       - jenkins-data:/var/jenkins_home
-      # - jenkins-docker-certs:/certs/client:ro
     ports:
       - "8080:8080"
       - "50000:50000" 
     networks:
-      - jenkins
+      - mvc-network
 
 networks:
-  php-mvc-network:
-  jenkins:
+  mvc-network:
 
 volumes:
   mysql-data:
   jenkins_home:
   jenkins-data:
-  # jenkins-docker-certs:
