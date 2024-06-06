@@ -1,42 +1,44 @@
 pipeline {
-    agent any
-    // agent {
-    //     docker {
-    //         image 'docker-jenkins-blueocean:2.452.1-1'
-    //         args '-u root' // Ensure root user to have permissions to execute necessary commands
-    //     }
-    // }
+    agent {
+        docker {
+            image 'php:8.2-cli' // Use a PHP Docker image for running the tests
+        }
+    }
 
     stages {
-        // stage('Clean Vendor Directory') {
-        //     steps {
-        //         sh 'rm -rf vendor'
-        //     }
-        // }
-
-        // stage('Make PHPUnit Executable') {
-        //     steps {
-        //         sh 'chmod +x vendor/bin/phpunit'
-        //     }
-        // }
-
-        // stage('Run Tests') {
-        //     steps {
-        //         sh 'vendor/bin/phpunit'
-        //     }
-        // }
-
-        stage('Cleanup') {
+        stage('Checkout') {
             steps {
-                echo 'Cleaning up..'
-                // Clean up temporary files or resources
+                // Checkout the code from version control
+                git 'https://github.com/longhauler99/php-mvc-blog.git'
             }
         }
-
-        stage('Deploy') {
+        stage('Install Dependencies') {
             steps {
-                echo 'Deploying....'
+                // Install Composer
+                sh 'curl -sS https://getcomposer.org/installer | php'
+                sh 'php composer.phar install'
             }
+        }
+        stage('Run Tests') {
+            steps {
+                // Run PHPUnit tests
+                sh 'vendor/bin/phpunit --configuration phpunit.xml'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up workspace
+            cleanWs()
+        }
+        success {
+            // Notify on success
+            echo 'Build succeeded!'
+        }
+        failure {
+            // Notify on failure
+            echo 'Build failed!'
         }
     }
 }

@@ -32,8 +32,6 @@ services:
     environment:
       PMA_HOST: mvc-db
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
-      MYSQL_PASSWORD: ""
     networks:
       - mvc-network
 
@@ -43,6 +41,7 @@ services:
     restart: on-failure 
     volumes:
       - jenkins-data:/var/jenkins_home
+      - .:/var/jenkins_home/workspace/your-php-app
     ports:
       - "8080:8080"
       - "50000:50000" 
@@ -54,5 +53,4 @@ networks:
 
 volumes:
   mysql-data:
-  jenkins_home:
   jenkins-data:
