@@ -32,7 +32,7 @@ pipeline {
                     echo 'Running SonarQube vulnerability analysis...'
                     def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarScanner') {
-                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner -X"
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
                     }
                 }
             }
