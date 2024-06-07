@@ -25,7 +25,7 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Create a non-root user and change ownership of the working directory
-RUN useradd -m composer && chown -R composer /var/www/html
+RUN adduser -m composer && chown -R composer /var/www/html
 
 # Switch to the non-root user
 USER composer
