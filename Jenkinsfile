@@ -54,7 +54,7 @@ pipeline {
             echo 'Build failed!'
             slackSend (
                 color: 'red',
-                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed (<${env.BUILD_URL}|Open>)",
+                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed! (<${env.BUILD_URL}|Open>)",
                 tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
             )
             error 'Pipeline aborted due to failure!'
@@ -63,7 +63,7 @@ pipeline {
             echo 'Build succeeded!'
             slackSend (
                 color: 'green',
-                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully (<${env.BUILD_URL}|Open>)",
+                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully! (<${env.BUILD_URL}|Open>)",
                 tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
             )
         }
