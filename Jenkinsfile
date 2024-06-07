@@ -52,7 +52,7 @@ pipeline {
             // Notify on success
             slackSend (
                 color: 'green',
-                message: "Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Completed Successfully",
+                message: "Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully (<${env.BUILD_URL}|Open>)",
                 tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
             )
             echo 'Build succeeded!'
@@ -61,7 +61,7 @@ pipeline {
             // Notify on failure
             slackSend (
                 color: 'red',
-                message: "Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Failed",
+                message: "Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed (<${env.BUILD_URL}|Open>)",
                 tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
             )
             echo 'Build failed!'
