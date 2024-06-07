@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    environment {
+        SLACK_CHANNEL = '#jenkins-slack-integration'
+        SLACK_TOKEN_CREDENTIAL_ID = '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
+    }
     
     stages {
         stage('Building Docker Image') {
@@ -54,13 +59,23 @@ pipeline {
         }
         success {
             // Notify on success
-            slackSend channel: '#jenkins-slack-integration', color: 'green', message: 'Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Completed Successfully', tokenCredentialId: '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
+            slackSend (
+                channel: "${env.SLACK_CHANNEL}",
+                color: 'green',
+                message: "Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Completed Successfully",
+                tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
+            )
             echo 'Build succeeded!'
         }
         failure {
             // Notify on failure
+            slackSend (
+                channel: "${env.SLACK_CHANNEL}",
+                color: 'red',
+                message: "Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Failed",
+                tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
+            )
             echo 'Build failed!'
-            slackSend channel: '#jenkins-slack-integration', color: 'red', message: 'Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Failed', tokenCredentialId: '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
         }
     }
 }
