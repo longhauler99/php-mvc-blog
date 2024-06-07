@@ -1,6 +1,6 @@
 # Use the official PHP image as the base image
-FROM php:8.2-apache
-
+# FROM php:8.2-apache
+FROM php:alpine3.20
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
