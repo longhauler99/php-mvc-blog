@@ -30,8 +30,8 @@ pipeline {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube'
-                    withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -X"
+                    withSonarQubeEnv('SonarScanner') {
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner -X"
                     }
                 }
             }
