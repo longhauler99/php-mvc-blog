@@ -15,15 +15,6 @@ pipeline {
                 }
             }
         }
-    stages {
-        stage('Building Docker Image') {
-            steps {
-                script {
-                    // Build the Docker image
-                    def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
-                }
-            }
-        }
         stage('Running Tests') {
             steps {
                 script {
@@ -35,12 +26,12 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Vulnarability Analysis') {
+        stage('SonarQube Vulnerability Analysis') {
             steps {
                 script {
                     def scannerHome = tool 'SonarQube'
-                    withSonarQubeEnv('SonarScanner') {
-                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner -X"
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner -X"
                     }
                 }
             }
