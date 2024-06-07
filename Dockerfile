@@ -37,6 +37,12 @@ USER root
 # Copy the rest of the application files into the container
 COPY . /var/www/html/
 
+# Set the proper ownership and permissions
+RUN chown -R www-data:www-data /var/www/html/
+
+# Switch back to the www-data user
+USER www-data
+
 # Expose the port the app runs on
 EXPOSE 9999 
 
