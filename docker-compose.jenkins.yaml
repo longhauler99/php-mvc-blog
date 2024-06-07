@@ -30,6 +30,7 @@ services:
     volumes:
       - jenkins-data:/var/jenkins_home
       - jenkins-docker-certs:/certs/client:ro
+      - /home/sainar/.nvm/versions/node/v22.2.0/bin/node:/usr/bin/node
     # Add any other configuration for jenkins-digitalocean if needed
     networks:
       - jenkins

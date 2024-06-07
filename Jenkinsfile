@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     stages {
-        stage('Build Docker Image') {
+        stage('Building Docker Image') {
             steps {
                 script {
                     // Build the Docker image
@@ -10,7 +10,7 @@ pipeline {
                 }
             }
         }
-        stage('Run Tests') {
+        stage('Running Tests') {
             steps {
                 script {
                     // Use the built Docker image to run tests
@@ -21,12 +21,12 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Analysis') {
+        stage('SonarQube Vulnarability Analysis') {
             steps {
                 script {
+                    def scannerHome = tool 'SonarQube'
                     withSonarQubeEnv('SonarScanner') {
-                        sh "sonar-scanner -X"
-                    }
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner -X"
                 }
             }
         }
