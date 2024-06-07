@@ -1,18 +1,16 @@
 # Use the official PHP image as the base image
-# FROM php:8.2-apache
-FROM php:alpine3.20
+FROM php:8.2-apache
+
 # Install system dependencies
-# RUN apt-get update && apt-get install -y \
-RUN apk update && apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
     libpng-dev \
-    # libjpeg-dev \
-    libjpeg-turbo-dev \
+    libjpeg-dev \
     libxml2-dev \
     libzip-dev \
-    zlib-dev \
+    zlib1g-dev \
     && docker-php-ext-install pdo_mysql mysqli gd
     
 # Install Composer
@@ -25,7 +23,7 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Create a non-root user and change ownership of the working directory
-RUN adduser -D -u 1000 composer && chown -R composer /var/www/html
+RUN useradd -m composer && chown -R composer /var/www/html
 
 # Switch to the non-root user
 USER composer
