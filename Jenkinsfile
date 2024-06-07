@@ -60,6 +60,7 @@ pipeline {
         failure {
             // Notify on failure
             echo 'Build failed!'
-slackSend channel: '#jenkins-slack-integration', color: 'red', message: 'Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Failed', tokenCredentialId: '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'        }
+            slackSend channel: '#jenkins-slack-integration', color: 'red', message: 'Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Failed', tokenCredentialId: '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
+        }
     }
 }
