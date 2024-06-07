@@ -12,7 +12,7 @@ RUN apk update && apk add --no-cache \
     libjpeg-turbo-dev \
     libxml2-dev \
     libzip-dev \
-    zlib1g-dev \
+    zlib-dev \
     && docker-php-ext-install pdo_mysql mysqli gd
     
 # Install Composer
