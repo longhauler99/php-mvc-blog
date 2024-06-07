@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
+                }
+            }
+        }
+        // stage('Run Tests') {
+        //     steps {
+        //         script {
+        //             // Use the built Docker image to run tests
+        //             def customImage = docker.image("php-mvc-blog:${env.BUILD_ID}")
+        //             customImage.inside('-u root') {
+        //                 sh 'vendor/bin/phpunit --configuration phpunit.xml'
+        //             }
+        //         }
+        //     }
+        // }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarQube'
+                    withSonarQubeEnv('SonarScanner') {
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner -X"
+                }
+            }
+        }
+    }
+}
+    
+
+    post {
+        always {
+            // Clean up workspace
+            cleanWs()
+            
+            // Remove the Docker image
+            script {
+                sh "docker rmi php-mvc-blog:${env.BUILD_ID} || true"
+            }
+        }
+        success {
+            // Notify on success
+            echo 'Build succeeded!'
+        }
+        failure {
+            // Notify on failure
+            echo 'Build failed!'
+        }
+    }
+}

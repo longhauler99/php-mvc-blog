@@ -1,19 +1,24 @@
 pipeline {
     agent any
+
+    environment {
+        SLACK_CHANNEL = '#jenkins-slack-integration'
+        SLACK_TOKEN_CREDENTIAL_ID = '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
+    }
     
     stages {
-        stage('Build Docker Image') {
+        stage('Building Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
+                    echo 'Building Docker image...'
                     def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
                 }
             }
         }
-        stage('Run Tests') {
+        stage('Running Tests') {
             steps {
                 script {
-                    // Use the built Docker image to run tests
+                    echo 'Running tests...'
                     def customImage = docker.image("php-mvc-blog:${env.BUILD_ID}")
                     customImage.inside('-u root') {
                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
@@ -21,18 +26,18 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Analysis') {
+        stage('SonarQube Vulnerability Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarScanner';
-                    withSonarQubeEnv(installationName: 'SonarScanner') {
-                        sh "${scannerHome}/bin/sonar-scanner -X"
+                    echo 'Running SonarQube vulnerability analysis...'
+                    def scannerHome = tool 'SonarQube'
+                    withSonarQubeEnv('SonarScanner') {
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner -X"
                     }
                 }
             }
         }
     }
-    
 
     post {
         always {
@@ -44,13 +49,23 @@ pipeline {
                 sh "docker rmi php-mvc-blog:${env.BUILD_ID} || true"
             }
         }
-        success {
-            // Notify on success
-            echo 'Build succeeded!'
-        }
         failure {
-            // Notify on failure
+            // Stop the pipeline if any stage fails
             echo 'Build failed!'
+            slackSend (
+                color: 'red',
+                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed (<${env.BUILD_URL}|Open>)",
+                tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
+            )
+            error 'Pipeline aborted due to failure!'
+        }
+        success {
+            echo 'Build succeeded!'
+            slackSend (
+                color: 'green',
+                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully (<${env.BUILD_URL}|Open>)",
+                tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
+            )
         }
     }
 }
