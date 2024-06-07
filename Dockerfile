@@ -2,12 +2,14 @@
 # FROM php:8.2-apache
 FROM php:alpine3.20
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+# RUN apt-get update && apt-get install -y \
+RUN apk update && apk add --no-cache \
     git \
     unzip \
     curl \
     libpng-dev \
-    libjpeg-dev \
+    # libjpeg-dev \
+    libjpeg-turbo-dev \
     libxml2-dev \
     libzip-dev \
     zlib1g-dev \
