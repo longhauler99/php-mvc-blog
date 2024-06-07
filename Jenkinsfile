@@ -10,6 +10,15 @@ pipeline {
                 }
             }
         }
+    stages {
+        stage('Building Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
+                }
+            }
+        }
         stage('Running Tests') {
             steps {
                 script {
@@ -45,11 +54,12 @@ pipeline {
         }
         success {
             // Notify on success
+            slackSend channel: '#jenkins-slack-integration', color: 'green', message: 'Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Completed Successfully', tokenCredentialId: '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
             echo 'Build succeeded!'
         }
         failure {
             // Notify on failure
             echo 'Build failed!'
-        }
+slackSend channel: '#jenkins-slack-integration', color: 'red', message: 'Build  ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) Failed', tokenCredentialId: '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'        }
     }
 }
