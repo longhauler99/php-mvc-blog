@@ -4,7 +4,6 @@ pipeline {
     environment {
         SLACK_CHANNEL = '#jenkins-slack-integration'
         SLACK_TOKEN_CREDENTIAL_ID = '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
-        DOCKER_HUB_USERNAME = 'devsainar'
         DOCKER_HUB_CREDENTIALS = credentials('jenkins-dockerhub')
     }
     
@@ -13,7 +12,7 @@ pipeline {
                 steps {
                     script {
                         echo 'Building Docker image...'
-                        def customImage = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
+                        def customImage = docker.build("devsainar/php-mvc-blog:${env.BUILD_ID}")
 
                         echo 'Pushing image to repository...'
                         customImage.push("${env.DOCKER_HUB_CREDENTIALS}")
