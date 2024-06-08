@@ -5,7 +5,7 @@ pipeline {
         SLACK_CHANNEL = '#jenkins-slack-integration'
         SLACK_TOKEN_CREDENTIAL_ID = '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
         DOCKER_HUB_USERNAME = 'devsainar'
-        DOCKER_HUB_CREDENTIALS = credentials('35548bb5-2a68-4da8-adbd-1a899d2902ee')
+        DOCKER_HUB_CREDENTIALS = credentials('devsainar-dockerhub')
     }
     
     stages {
