@@ -13,7 +13,7 @@ pipeline {
                 steps {
                     script {
                         echo 'Building Docker image...'
-                        def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
+                        def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
 
                         // echo 'Pushing image to repository...'
                         // app.push("${env.DOCKER_HUB_CREDENTIALS}")
@@ -69,7 +69,7 @@ pipeline {
             
             // Remove the Docker image
             script {
-                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID} || true"
+                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog || true"
             }
         }
         failure {
