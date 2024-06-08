@@ -66,7 +66,7 @@ pipeline {
 
     post {
         always {
-            node('any') {
+            node('Built-In Node') {
                 cleanWs()
                 script {
                     sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog || true"
@@ -74,7 +74,7 @@ pipeline {
             }
         }
         failure {
-            node('any') {
+            node('Built-In Node') {
                 echo 'Build failed!'
                 slackSend (
                     color: 'red',
@@ -85,7 +85,7 @@ pipeline {
             }
         }
         success {
-            node('any') {
+            node('Built-In Node') {
                 echo 'Build succeeded!'
                 slackSend (
                     color: 'green',
