@@ -50,12 +50,13 @@ pipeline {
         }
         stage('Pushing Image.') {
             steps {
-                echo 'Pushing image ro registry...'
-                // Push Docker image to registry
-                docker.withRegistry("https://registry.hub.docker.com", "${env.DOCKER_HUB_CREDENTIALS}") {
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
-
+                script {
+                    echo 'Pushing image ro registry...'
+                    // Push Docker image to registry
+                    docker.withRegistry("https://registry.hub.docker.com", "${env.DOCKER_HUB_CREDENTIALS}") {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
                 }
             }
         }
