@@ -67,7 +67,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker image to server via SSH using SSH key authentication
-                    sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"'
+                    sh 'ssh -i /root/.ssh/id_rsa sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"'
                 }
             }
         }
