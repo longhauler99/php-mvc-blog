@@ -59,6 +59,7 @@ pipeline {
                         }
                     }
                 }
+            }    
         }
         stage('Deploying Image') {
             steps {
