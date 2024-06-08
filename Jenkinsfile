@@ -66,27 +66,33 @@ pipeline {
 
     post {
         always {
-            cleanWs()
-            script {
-                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog || true"
+            node {
+                cleanWs()
+                script {
+                    sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog || true"
+                }
             }
         }
         failure {
-            echo 'Build failed!'
-            slackSend (
-                color: 'red',
-                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed! See console output at: (<${env.BUILD_URL}|Open>)",
-                tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
-            )
-            error 'Pipeline aborted due to failure!'
+            node {
+                echo 'Build failed!'
+                slackSend (
+                    color: 'red',
+                    message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed! See console output at: (<${env.BUILD_URL}|Open>)",
+                    tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
+                )
+                error 'Pipeline aborted due to failure!'
+            }
         }
         success {
-            echo 'Build succeeded!'
-            slackSend (
-                color: 'green',
-                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully! See console output at: (<${env.BUILD_URL}|Open>)",
-                tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
-            )
+            node {
+                echo 'Build succeeded!'
+                slackSend (
+                    color: 'green',
+                    message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully! See console output at: (<${env.BUILD_URL}|Open>)",
+                    tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
+                )
+            }
         }
     }
 }
