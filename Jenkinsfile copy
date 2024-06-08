@@ -45,7 +45,7 @@ pipeline {
                 }
             }
         }
-        stage('Pushing Image') {
+        stage('Pushing Image.') {
             steps {
                 script {
                     echo 'Pushing image ro registry...'
@@ -54,14 +54,6 @@ pipeline {
                         app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
-                }
-            }
-        }
-        stage('Deploying Image') {
-            steps {
-                script {
-                    // Deploy Docker image to server via SSH using SSH key authentication
-                    sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:latest"'
                 }
             }
         }
