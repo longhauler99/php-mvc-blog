@@ -47,10 +47,10 @@ pipeline {
         }
         stage('Pushing Image') {
             steps {
-                script {
-                    echo 'Login to dockerhub..'
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                echo 'Login to dockerhub..'
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 
+                script {
                     echo 'Pushing image ro registry...'
                     docker.withRegistry("https://registry.hub.docker.com", "${env.DOCKER_HUB_CREDENTIALS}") {
                         app.push("${env.BUILD_NUMBER}")
