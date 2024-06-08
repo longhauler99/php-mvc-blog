@@ -63,14 +63,14 @@ pipeline {
                 }
             }    
         }
-        // stage('Deploying Image') {
-        //     steps {
-        //         script {
-        //             // Deploy Docker image to server via SSH using SSH key authentication
-        //             sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"'
-        //         }
-        //     }
-        // }
+        stage('Deploying Image') {
+            steps {
+                script {
+                    // Deploy Docker image to server via SSH using SSH key authentication
+                    sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"'
+                }
+            }
+        }
     }
 
     post {
@@ -82,7 +82,7 @@ pipeline {
             
             // Remove the Docker image
             script {
-                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog || true"
+                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER} || true"
             }
         }
         failure {
