@@ -13,7 +13,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
+                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
         //         script {
         //             echo 'Running tests...'
                     
-        //             def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
+        //             def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
 
         //             app.inside('-u root') {
         //                 sh 'vendor/bin/phpunit --configuration phpunit.xml'
@@ -57,8 +57,9 @@ pipeline {
             steps {
                 script {
                     echo 'Pushing image to registry...'
-                    app.push("${env.BUILD_NUMBER}")
-                    app.push("latest")
+                    sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
+                    // app.push("${env.BUILD_NUMBER}")
+                    // app.push("latest")
                 }
             }    
         }
@@ -66,7 +67,7 @@ pipeline {
         //     steps {
         //         script {
         //             // Deploy Docker image to server via SSH using SSH key authentication
-        //             sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:latest"'
+        //             sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"'
         //         }
         //     }
         // }
