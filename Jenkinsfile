@@ -13,10 +13,10 @@ pipeline {
                 steps {
                     script {
                         echo 'Building Docker image...'
-                        def customImage = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
+                        def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
 
                         // echo 'Pushing image to repository...'
-                        // customImage.push("${env.DOCKER_HUB_CREDENTIALS}")
+                        // app.push("${env.DOCKER_HUB_CREDENTIALS}")
                     }
                 }
             }
@@ -24,9 +24,13 @@ pipeline {
             steps {
                 script {
                     echo 'Running tests...'
-                    def customImage = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
-                    customImage.inside('-u root') {
+                    
+                    def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
+
+                    app.inside('-u root') {
                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
+
+                        sh 'echo "Tests passed'
                     }
                 }
             }
@@ -35,16 +39,24 @@ pipeline {
             steps {
                 script {
                     echo 'Running SonarQube vulnerability analysis...'
+
                     def scannerHome = tool 'SonarQube'
+
                     withSonarQubeEnv('SonarScanner') {
                         sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
                     }
                 }
             }
         }
-        stage('Push image...') {
+        stage('Pushing Image.') {
             steps {
-                echo 'will push image'
+                echo 'Pushing image ro registry...'
+                // Push Docker image to registry
+                docker.withRegistry("https://registry.hub.docker.com", "${env.DOCKER_HUB_CREDENTIALS}") {
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
+
+                }
             }
         }
     }
