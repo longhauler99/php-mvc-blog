@@ -43,7 +43,9 @@ pipeline {
             }
         }
         stage('Push image...') {
-            echo 'will push image'
+            steps {
+                echo 'will push image'
+            }
         }
     }
 
