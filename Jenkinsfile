@@ -9,66 +9,71 @@ pipeline {
     }
     
     stages {
-            stage('Building Docker Image') {
-                steps {
-                    script {
-                        echo 'Building Docker image...'
-                        def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
-                    }
-                }
-            }
-        stage('Running Tests') {
-            steps {
-                script {
-                    echo 'Running tests...'
+        //     stage('Building Docker Image') {
+        //         steps {
+        //             script {
+        //                 echo 'Building Docker image...'
+        //                 def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
+        //             }
+        //         }
+        //     }
+        // stage('Running Tests') {
+        //     steps {
+        //         script {
+        //             echo 'Running tests...'
                     
-                    def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
+        //             def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
 
-                    app.inside('-u root') {
-                        sh 'vendor/bin/phpunit --configuration phpunit.xml'
+        //             app.inside('-u root') {
+        //                 sh 'vendor/bin/phpunit --configuration phpunit.xml'
 
-                        sh 'echo "Tests passed"'
-                    }
-                }
-            }
-        }
-        stage('SonarQube Vulnerability Analysis') {
-            steps {
-                script {
-                    echo 'Running SonarQube vulnerability analysis...'
+        //                 sh 'echo "Tests passed"'
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('SonarQube Vulnerability Analysis') {
+        //     steps {
+        //         script {
+        //             echo 'Running SonarQube vulnerability analysis...'
 
-                    def scannerHome = tool 'SonarQube'
+        //             def scannerHome = tool 'SonarQube'
 
-                    withSonarQubeEnv('SonarScanner') {
-                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
-                    }
-                }
-            }
-        }
+        //             withSonarQubeEnv('SonarScanner') {
+        //                 sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
+        //             }
+        //         }
+        //     }
+        // }
         stage('Pushing Image') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: "${env.DOCKER_HUB_CREDENTIALS_ID}", passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
-                        echo 'Login to Docker Hub...'
-                        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                        
-                        echo 'Pushing image to registry...'
-                        docker.withRegistry("https://registry.hub.docker.com") {
-                            app.push("${env.BUILD_NUMBER}")
-                            app.push("latest")
-                        }
-                    }
-                }
-            }    
-        }
-        stage('Deploying Image') {
-            steps {
-                script {
-                    // Deploy Docker image to server via SSH using SSH key authentication
-                    sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:latest"'
-                }
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
+        // stage('Pushing Image') {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: "${env.DOCKER_HUB_CREDENTIALS_ID}", passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
+        //                 echo 'Login to Docker Hub...'
+        //                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                        
+        //                 echo 'Pushing image to registry...'
+        //                 docker.withRegistry("https://registry.hub.docker.com") {
+        //                     app.push("${env.BUILD_NUMBER}")
+        //                     app.push("latest")
+        //                 }
+        //             }
+        //         }
+        //     }    
+        // }
+        // stage('Deploying Image') {
+        //     steps {
+        //         script {
+        //             // Deploy Docker image to server via SSH using SSH key authentication
+        //             sh 'ssh -i ~/.ssh/authorized_keys sainar@192.168.56.102 "docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:latest"'
+        //         }
+        //     }
+        // }
     }
 
     post {
