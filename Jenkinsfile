@@ -9,14 +9,14 @@ pipeline {
     }
     
     stages {
-        stage('Building Docker Image') {
-            steps {
-                script {
-                    echo 'Building Docker image...'
-                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-                }
-            }
-        }
+        // stage('Building Docker Image') {
+        //     steps {
+        //         script {
+        //             echo 'Building Docker image...'
+        //             def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+        //         }
+        //     }
+        // }
         // stage('Running Tests') {
         //     steps {
         //         script {
@@ -45,24 +45,24 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Login to Dockerhub') {
-            steps {
-                echo 'Login to Docker Hub...'
-                withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                }
-            }
-        }
-        stage('Pushing Image') {
-            steps {
-                script {
-                    echo 'Pushing image to registry...'
-                    sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
-                    // app.push("${env.BUILD_NUMBER}")
-                    // app.push("latest")
-                }
-            }    
-        }
+        // stage('Login to Dockerhub') {
+        //     steps {
+        //         echo 'Login to Docker Hub...'
+        //         withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
+        //             sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        //         }
+        //     }
+        // }
+        // stage('Pushing Image') {
+        //     steps {
+        //         script {
+        //             echo 'Pushing image to registry...'
+        //             sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
+        //             // app.push("${env.BUILD_NUMBER}")
+        //             // app.push("latest")
+        //         }
+        //     }    
+        // }
         stage('Deploying Image') {
             steps {
                 script {
