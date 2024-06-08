@@ -7,14 +7,17 @@ pipeline {
     }
     
     stages {
-        stage('Building Docker Image') {
-            steps {
-                script {
-                    echo 'Building Docker image...'
-                    def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
+            stage('Building Docker Image') {
+                steps {
+                    script {
+                        echo 'Building Docker image...'
+                        def customImage = docker.build("php-mvc-blog:${env.BUILD_ID}")
+
+                        echo 'Pushing image to repository...'
+                        customImage.push()
+                    }
                 }
             }
-        }
         stage('Running Tests') {
             steps {
                 script {
