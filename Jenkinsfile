@@ -13,7 +13,7 @@ pipeline {
                 steps {
                     script {
                         echo 'Building Docker image...'
-                        def customImage = docker.build("${env.DOCKER_HUB_USERNAME}php-mvc-blog:${env.BUILD_ID}")
+                        def customImage = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
 
                         echo 'Pushing image to repository...'
                         customImage.push("${env.DOCKER_HUB_CREDENTIALS}")
