@@ -75,7 +75,7 @@ pipeline {
             steps {
                 script {
                     // Deploy Docker image to server via SSH using SSH key authentication
-                    ssh -i /var/jenkins_home/.ssh/id_rsa sainar@192.168.0.104 docker run -p 9999:80 ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:140
+                    sh "ssh -i /var/jenkins_home/.ssh/id_rsa sainar@192.168.0.104 docker run -p 9999:80 ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:140"
                 }
             }
         }
