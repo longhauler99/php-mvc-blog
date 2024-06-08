@@ -47,14 +47,17 @@ pipeline {
         }
         stage('Pushing Image') {
             steps {
-                echo 'Login to dockerhub..'
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-
                 script {
-                    echo 'Pushing image ro registry...'
-                    docker.withRegistry("https://registry.hub.docker.com", "${env.DOCKER_HUB_CREDENTIALS}") {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
+                        echo 'Login to Docker Hub...'
+                        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+
+                        echo 'Pushing image to registry...'
+                        docker.withRegistry("https://registry.hub.docker.com") {
+                            def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+                            app.push("${env.BUILD_NUMBER}")
+                            app.push("latest")
+                        }
                     }
                 }
             }
