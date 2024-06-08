@@ -57,7 +57,7 @@ pipeline {
             steps {
                 script {
                     echo 'Pushing image to registry...'
-                    sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
+                    sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}" 
                     // app.push("${env.BUILD_NUMBER}")
                     // app.push("latest")
                 }
