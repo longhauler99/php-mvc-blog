@@ -30,7 +30,7 @@ pipeline {
                     app.inside('-u root') {
                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
 
-                        sh 'echo "Tests passed'
+                        sh 'echo "Tests passed"'
                     }
                 }
             }
