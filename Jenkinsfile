@@ -4,6 +4,7 @@ pipeline {
     environment {
         SLACK_CHANNEL = '#jenkins-slack-integration'
         SLACK_TOKEN_CREDENTIAL_ID = '5b65b72f-9ab0-409d-bd0d-84ec47b4d0e0'
+        DOCKER_HUB_USERNAME = 'devsainar'
         DOCKER_HUB_CREDENTIALS = credentials('jenkins-dockerhub')
     }
     
@@ -12,10 +13,10 @@ pipeline {
                 steps {
                     script {
                         echo 'Building Docker image...'
-                        def customImage = docker.build("devsainar/php-mvc-blog:${env.BUILD_ID}")
+                        def customImage = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
 
-                        echo 'Pushing image to repository...'
-                        customImage.push("${env.DOCKER_HUB_CREDENTIALS}")
+                        // echo 'Pushing image to repository...'
+                        // customImage.push("${env.DOCKER_HUB_CREDENTIALS}")
                     }
                 }
             }
@@ -23,7 +24,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running tests...'
-                    def customImage = docker.image("php-mvc-blog:${env.BUILD_ID}")
+                    def customImage = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID}")
                     customImage.inside('-u root') {
                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
                     }
@@ -41,6 +42,9 @@ pipeline {
                 }
             }
         }
+        stage('Push image...') {
+            echo 'will push image'
+        }
     }
 
     post {
@@ -50,7 +54,7 @@ pipeline {
             
             // Remove the Docker image
             script {
-                sh "docker rmi php-mvc-blog:${env.BUILD_ID} || true"
+                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_ID} || true"
             }
         }
         failure {
