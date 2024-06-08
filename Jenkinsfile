@@ -9,14 +9,14 @@ pipeline {
     }
     
     stages {
-        //     stage('Building Docker Image') {
-        //         steps {
-        //             script {
-        //                 echo 'Building Docker image...'
-        //                 def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
-        //             }
-        //         }
-        //     }
+        stage('Building Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog")
+                }
+            }
+        }
         // stage('Running Tests') {
         //     steps {
         //         script {
@@ -45,7 +45,7 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Pushing Image') {
+        stage('Login to Dockerhub') {
             steps {
                 echo 'Login to Docker Hub...'
                 withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
@@ -53,22 +53,15 @@ pipeline {
                 }
             }
         }
-        // stage('Pushing Image') {
-        //     steps {
-        //         script {
-        //             withCredentials([usernamePassword(credentialsId: "${env.DOCKER_HUB_CREDENTIALS_ID}", passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
-        //                 echo 'Login to Docker Hub...'
-        //                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                        
-        //                 echo 'Pushing image to registry...'
-        //                 docker.withRegistry("https://registry.hub.docker.com") {
-        //                     app.push("${env.BUILD_NUMBER}")
-        //                     app.push("latest")
-        //                 }
-        //             }
-        //         }
-        //     }    
-        // }
+        stage('Pushing Image') {
+            steps {
+                script {
+                    echo 'Pushing image to registry...'
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
+                }
+            }    
+        }
         // stage('Deploying Image') {
         //     steps {
         //         script {
@@ -81,6 +74,8 @@ pipeline {
 
     post {
         always {
+            sh 'docker logout'
+
             // Clean up workspace
             cleanWs()
             
