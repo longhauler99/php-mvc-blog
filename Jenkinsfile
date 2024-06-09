@@ -9,7 +9,7 @@ pipeline {
     }
     
     stages {
-        stage('Building Docker Image') {
+        stage('Building Docker Image') { 
             steps {
                 script {
                     echo 'Building Docker image...'
