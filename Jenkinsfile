@@ -9,14 +9,14 @@ pipeline {
     }
     
     stages {
-//         stage('Building Docker Image') {
-//             steps {
-//                 script {
-//                     echo 'Building Docker image...'
-//                     def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-//                 }
-//             }
-//         }
+        stage('Building Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+                }
+            }
+        }
 //         stage('Running Tests') {
 //             steps {
 //                 script {
@@ -40,7 +40,7 @@ pipeline {
                     def scannerHome = tool 'SonarQube'
 
                     withSonarQubeEnv('SonarScanner') {
-                        sh "${scannerHome}/sonar-scanner"
+                        sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
             }
