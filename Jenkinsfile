@@ -37,10 +37,10 @@ pipeline {
                 script {
                     echo 'Running SonarQube vulnerability analysis...'
 
-                    def scannerHome = tool 'SonarQube'
+//                     def scannerHome = tool 'SonarQube'
 
-                    withSonarQubeEnv('SonarScanner') {
-                        sh "${scannerHome}/bin/sonar-scanner"
+                    withSonarQubeEnv('SonarQube') {
+                        sh "sonar-scanner"
                     }
                 }
             }
