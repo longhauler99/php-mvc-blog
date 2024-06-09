@@ -57,28 +57,28 @@ pipeline {
             steps {
                 script { 
                     echo 'Pushing image to registry...'
-                    sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}" 
-                    // app.push("${env.BUILD_NUMBER}")
-                    // app.push("latest")
+//                     sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
+//                     // app.push("${env.BUILD_NUMBER}")
+//                     // app.push("latest")
                 }
             }    
         }
-        stage('Deploying Image') {
-            steps {
-                script {
-                    // Deploy Docker image to server via SSH using SSH key authentication
-                    sh "ssh -i /var/jenkins_home/.ssh/id_rsa sainar@192.168.0.104 docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:140"
-                }
-            }
-        }
-        stage('Run New Container') {
-            steps {
-                script {
-                    // Deploy Docker image to server via SSH using SSH key authentication
-                    sh "ssh -i /var/jenkins_home/.ssh/id_rsa sainar@192.168.0.104 docker run -p 9999:9999 ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:140"
-                }
-            }
-        }
+//         stage('Deploying Image') {
+//             steps {
+//                 script {
+//                     // Deploy Docker image to server via SSH using SSH key authentication
+//                     sh "ssh -i /var/jenkins_home/.ssh/id_rsa sainar@192.168.0.104 docker pull ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:140"
+//                 }
+//             }
+//         }
+//         stage('Run New Container') {
+//             steps {
+//                 script {
+//                     // Deploy Docker image to server via SSH using SSH key authentication
+//                     sh "ssh -i /var/jenkins_home/.ssh/id_rsa sainar@192.168.0.104 docker run -p 9999:9999 ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:140"
+//                 }
+//             }
+//         }
     }
 
     post {
