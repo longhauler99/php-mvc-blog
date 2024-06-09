@@ -9,29 +9,29 @@ pipeline {
     }
     
     stages {
-        stage('Building Docker Image') { 
-            steps {
-                script {
-                    echo 'Building Docker image...'
-                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-                }
-            }
-        }
-        stage('Running Tests') {
-            steps {
-                script {
-                    echo 'Running tests...'
-                    
-                    def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-
-                    app.inside('-u root') {
-                        sh 'vendor/bin/phpunit --configuration phpunit.xml'
-
-                        sh 'echo "Tests passed"'
-                    }
-                }
-            }
-        }
+//         stage('Building Docker Image') {
+//             steps {
+//                 script {
+//                     echo 'Building Docker image...'
+//                     def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+//                 }
+//             }
+//         }
+//         stage('Running Tests') {
+//             steps {
+//                 script {
+//                     echo 'Running tests...'
+//
+//                     def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+//
+//                     app.inside('-u root') {
+//                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
+//
+//                         sh 'echo "Tests passed"'
+//                     }
+//                 }
+//             }
+//         }
         stage('SonarQube Vulnerability Analysis') {
             steps {
                 script {
@@ -45,14 +45,14 @@ pipeline {
                 }
             }
         }
-        stage('Login to Dockerhub') {
-            steps {
-                echo 'Login to Docker Hub...'
-                withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
-                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                }
-            }
-        }
+//         stage('Login to Dockerhub') {
+//             steps {
+//                 echo 'Login to Docker Hub...'
+//                 withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
+//                     sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+//                 }
+//             }
+//         }
         stage('Pushing Image') {
             steps {
                 script { 
