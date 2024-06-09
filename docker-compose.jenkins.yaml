@@ -17,7 +17,7 @@ services:
     # Add any other configuration for jenkins-server if needed
 
   jenkins-digitalocean:
-    image: jenkins-blueocean:2.452.1-1
+    image: jenkins-blueocean:2.452.1
     container_name: jenkins-digitalocean
     restart: on-failure
     environment:
