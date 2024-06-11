@@ -9,6 +9,22 @@ pipeline {
     }
     
     stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/longhauler99/php-mvc-blog.git'
+            }
+        }
+        stage('SonarQube Vulnerability Analysis') {
+            steps {
+                script {
+                    echo 'Running SonarQube vulnerability analysis...'
+                    def scannerHome = tool 'SonarQube'
+                    withSonarQubeEnv('SonarScanner') {
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
         stage('Building Docker Image') {
             steps {
                 echo 'Building Image...'
@@ -24,7 +40,7 @@ pipeline {
                     echo 'Running tests...'
 
                     def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-                    // def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:164")
+                    // def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:165")
 
                     app.inside('-u root') {
                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
@@ -34,32 +50,21 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Vulnerability Analysis') {
+        stage('Login to Dockerhub') {
             steps {
-                script {
-                    echo 'Running SonarQube vulnerability analysis...'
-                    def scannerHome = tool 'SonarQube'
-                    withSonarQubeEnv('SonarScanner') {
-                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
-                    }
+                echo 'Login to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                 }
             }
         }
-//         stage('Login to Dockerhub') {
-//             steps {
-//                 echo 'Login to Docker Hub...'
-//                 withCredentials([usernamePassword(credentialsId: 'devsainar-dockerhub', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW', usernameVariable: 'DOCKERHUB_CREDENTIALS_USR')]) {
-//                     sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-//                 }
-//             }
-//         }
         stage('Pushing Image') {
             steps {
                 script { 
                     echo 'Pushing image to registry....'
-//                     sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
-//                     // app.push("${env.BUILD_NUMBER}")
-//                     // app.push("latest")
+                    sh "docker push ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}"
+                    // app.push("${env.BUILD_NUMBER}")
+                    // app.push("latest")
                 }
             }    
         }
@@ -99,7 +104,8 @@ pipeline {
             echo 'Build failed!'
             slackSend (
                 color: 'red',
-                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed! See console output at: (<${env.BUILD_URL}|Open>)",
+                // message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed! See console output at: (<${env.BUILD_URL}|Open>)",
+                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Failed! See console output at: (<165|Open>)",
                 tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
             )
             error 'Pipeline aborted due to failure!'
@@ -108,7 +114,8 @@ pipeline {
             echo 'Build succeeded!'
             slackSend (
                 color: 'green',
-                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully! See console output at: (<${env.BUILD_URL}|Open>)",
+                // message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully! See console output at: (<${env.BUILD_URL}|Open>)",
+                message: "Build ${env.JOB_NAME} ${env.BUILD_NUMBER} Completed Successfully! See console output at: (<165|Open>)",
                 tokenCredentialId: "${env.SLACK_TOKEN_CREDENTIAL_ID}"
             )
         }
