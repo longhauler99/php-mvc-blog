@@ -23,8 +23,8 @@ pipeline {
                 script {
                     echo 'Running tests...'
 
-                    // def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-                    def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:163")
+                    def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+                    // def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:164")
 
                     app.inside('-u root') {
                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
@@ -90,6 +90,7 @@ pipeline {
             
             // Remove the Docker image
             script {
+                sh 'echo "RMI Dockerfile"'
                 // sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER} || true"
             }
         }
