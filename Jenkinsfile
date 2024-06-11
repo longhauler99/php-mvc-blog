@@ -32,19 +32,17 @@ pipeline {
 //                 }
 //             }
 //         }
-        stage('SonarQube Vulnerability Analysis') {
-            steps {
-                script {
-                    echo 'Running SonarQube vulnerability analysis...'
-
-//                     def scannerHome = tool 'SonarQube'
-
-                    withSonarQubeEnv('SonarScanner') {
-                        sh "sonar-scanner"
+            stage('SonarQube Vulnerability Analysis') {
+                steps {
+                    script {
+                        echo 'Running SonarQube vulnerability analysis...'
+                        def scannerHome = tool 'SonarQube'
+                        withSonarQubeEnv('SonarScanner') {
+                            sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
+                        }
                     }
                 }
             }
-        }
 //         stage('Login to Dockerhub') {
 //             steps {
 //                 echo 'Login to Docker Hub...'
