@@ -11,38 +11,40 @@ pipeline {
     stages {
         stage('Building Docker Image') {
             steps {
-                script {
-                    echo 'Building Docker image...'
-                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-                }
+                echo 'Building Image...'
+                // script {
+                //     echo 'Building Docker image...'
+                //     def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+                // }
             }
         }
-//         stage('Running Tests') {
-//             steps {
-//                 script {
-//                     echo 'Running tests...'
-//
-//                     def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-//
-//                     app.inside('-u root') {
-//                         sh 'vendor/bin/phpunit --configuration phpunit.xml'
-//
-//                         sh 'echo "Tests passed"'
-//                     }
-//                 }
-//             }
-//         }
-            stage('SonarQube Vulnerability Analysis') {
-                steps {
-                    script {
-                        echo 'Running SonarQube vulnerability analysis...'
-                        def scannerHome = tool 'SonarQube'
-                        withSonarQubeEnv('SonarScanner') {
-                            sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
-                        }
+        stage('Running Tests') {
+            steps {
+                script {
+                    echo 'Running tests...'
+
+                    // def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+                    def app = docker.image("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:163")
+
+                    app.inside('-u root') {
+                        sh 'vendor/bin/phpunit --configuration phpunit.xml'
+
+                        sh 'echo "Tests passed"'
                     }
                 }
             }
+        }
+        stage('SonarQube Vulnerability Analysis') {
+            steps {
+                script {
+                    echo 'Running SonarQube vulnerability analysis...'
+                    def scannerHome = tool 'SonarQube'
+                    withSonarQubeEnv('SonarScanner') {
+                        sh "${scannerHome}/sonar-scanner-4.8.1.3023/bin/sonar-scanner"
+                    }
+                }
+            }
+        }
 //         stage('Login to Dockerhub') {
 //             steps {
 //                 echo 'Login to Docker Hub...'
@@ -88,7 +90,7 @@ pipeline {
             
             // Remove the Docker image
             script {
-                sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER} || true"
+                // sh "docker rmi ${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER} || true"
             }
         }
         failure {
