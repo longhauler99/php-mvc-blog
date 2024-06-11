@@ -12,10 +12,10 @@ pipeline {
         stage('Building Docker Image') {
             steps {
                 echo 'Building Image...'
-                // script {
-                //     echo 'Building Docker image...'
-                //     def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
-                // }
+                script {
+                    echo 'Building Docker image...'
+                    def app = docker.build("${env.DOCKER_HUB_USERNAME}/php-mvc-blog:${env.BUILD_NUMBER}")
+                }
             }
         }
         stage('Running Tests') {
